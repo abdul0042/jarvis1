@@ -1085,7 +1085,7 @@ function ConnectedAppsPanel({ apps, setApps }) {
       const newStatus = ok ? 'connected' : 'error';
       
       if (app.id && app.id !== 'gmail-oauth' && app.id !== 'sheets-oauth') {
-        await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/apps/${app.id}/status`, {
+        await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + ''}/api/apps/${app.id}/status`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: newStatus })
@@ -1096,7 +1096,7 @@ function ConnectedAppsPanel({ apps, setApps }) {
     } catch {
       const newStatus = 'error';
       if (app.id && app.id !== 'gmail-oauth' && app.id !== 'sheets-oauth') {
-        await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/apps/${app.id}/status`, {
+        await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + ''}/api/apps/${app.id}/status`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: newStatus })

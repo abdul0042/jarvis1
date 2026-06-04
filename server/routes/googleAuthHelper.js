@@ -20,7 +20,7 @@ async function getGoogleAuthClient(service, req) {
   const oauth2Client = new google.auth.OAuth2(
     process.env.GMAIL_CLIENT_ID,
     process.env.GMAIL_CLIENT_SECRET,
-    (process.env.BACKEND_URL || 'http://localhost:5000') + `/api/${service}/callback`
+    (process.env.BACKEND_URL || 'https://jarvis1-92wq.onrender.com') + `/api/${service}/callback`
   );
 
   oauth2Client.setCredentials({

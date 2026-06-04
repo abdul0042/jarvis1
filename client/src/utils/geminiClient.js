@@ -1,4 +1,4 @@
-const BACKEND_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '';
+const BACKEND_URL = (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '';
 
 /**
  * Send a message to the backend Gemini chat API

@@ -145,7 +145,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
 
       try {
         const sanitizedApps = apps.map(a => ({ name: a.name, baseUrl: a.baseUrl, description: a.description }));
-        const response = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/chat', {
+        const response = await fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -246,11 +246,11 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
         setTimeout(async () => {
           try {
             if (targetApp.toLowerCase() === 'gmail') {
-              await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/tokens/gmail', { method: 'DELETE' });
+              await fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/tokens/gmail', { method: 'DELETE' });
               localStorage.removeItem('jarvis_gmail_tokens');
               if (setApps) setApps(prev => prev.filter(a => !a.isGmail && !a.name.toLowerCase().includes('gmail')));
             } else if (targetApp.toLowerCase() === 'sheets' || targetApp.toLowerCase() === 'google sheets') {
-              await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/tokens/sheets', { method: 'DELETE' });
+              await fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/tokens/sheets', { method: 'DELETE' });
               localStorage.removeItem('jarvis_sheets_tokens');
               if (setApps) setApps(prev => prev.filter(a => !a.isSheets && !a.name.toLowerCase().includes('sheet')));
             } else {
@@ -261,7 +261,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
                 targetApp.toLowerCase().includes(app.name.toLowerCase())
               );
               if (matchingApp) {
-                await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/apps/${matchingApp.id}`, { method: 'DELETE' });
+                await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + ''}/api/apps/${matchingApp.id}`, { method: 'DELETE' });
                 if (setApps) setApps(prev => prev.filter(app => app.id !== matchingApp.id));
               } else {
                 addMessageToUi({ sender: 'jarvis', text: `Could not find any connected app named "${targetApp}" to disconnect, Sir.` });
@@ -351,7 +351,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
             result: { status: apiResult.status, body: { error: errMsg } },
             aiSummary: finalMsg,
           };
-          fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/history', {
+          fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/history', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newHistoryItem)
@@ -541,7 +541,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
             result: { status: apiResult.status, body: apiResult.data },
             aiSummary: directReply,
           };
-          fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/history', {
+          fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/history', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newHistoryItem)
@@ -635,7 +635,7 @@ Instructions:
             },
             aiSummary: finalSummary,
           };
-          fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/history', {
+          fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/history', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newHistoryItem)

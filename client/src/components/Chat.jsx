@@ -741,7 +741,16 @@ export function Chat({
     };
   }, [selectedVoiceName, setSelectedVoiceName]);
 
+  const unlockSpeech = () => {
+    if (window.speechSynthesis) {
+      const silentUtterance = new SpeechSynthesisUtterance('');
+      silentUtterance.volume = 0;
+      window.speechSynthesis.speak(silentUtterance);
+    }
+  };
+
   const handleStartListening = () => {
+    unlockSpeech();
     window.dispatchEvent(new CustomEvent('launch-jarvis-assistant'));
   };
 
@@ -774,23 +783,17 @@ export function Chat({
     } else {
       // Fallback selection: If Tanglish output or Tamil script exists, choose Tamil voice.
       const isTamilText = /[\u0b80-\u0bff]/.test(cleanText);
-      if (language === 'tanglish' || isTamilText) {
+      if (language === 'tanglish' && !isTamilText) {
+        utterance.lang = 'en-IN';
+        const indianEngVoice = voicesList.find(voice => voice.lang === 'en-IN' || voice.name.includes('India'));
+        if (indianEngVoice) utterance.voice = indianEngVoice;
+      } else if (isTamilText) {
         utterance.lang = 'ta-IN';
         const tamilVoice = voicesList.find(voice => voice.lang.startsWith('ta'));
-        const indianEngVoice = voicesList.find(voice => voice.lang === 'en-IN' || voice.name.includes('India'));
-        
-        if (tamilVoice) {
-          utterance.voice = tamilVoice;
-        } else if (indianEngVoice) {
-          utterance.voice = indianEngVoice;
-          utterance.lang = 'en-IN';
-        } else {
-          const fallbackEng = voicesList.find(voice => voice.lang.startsWith('en'));
-          if (fallbackEng) {
-            utterance.voice = fallbackEng;
-            utterance.lang = fallbackEng.lang;
-          }
-        }
+        if (tamilVoice) utterance.voice = tamilVoice;
+      } else if (language === 'tanglish') {
+        const fallbackEng = voicesList.find(voice => voice.lang.startsWith('en'));
+        if (fallbackEng) utterance.voice = fallbackEng;
       } else {
         utterance.lang = 'en-US';
         // Prioritize Indian English voices first if available, then fallback
@@ -843,8 +846,11 @@ export function Chat({
     }
   }, [speechEnabled]);
 
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    unlockSpeech();
     if (!inputText.trim() || isLoading) return;
     onSendMessage(inputText.trim(), language);
     setInputText('');
@@ -893,7 +899,10 @@ export function Chat({
           <button 
             className="ch-clear-btn" 
             type="button" 
-            onClick={() => setSpeechEnabled(!speechEnabled)}
+            onClick={() => {
+              unlockSpeech();
+              setSpeechEnabled(!speechEnabled);
+            }}
             style={{ 
               color: speechEnabled ? '#00ff41' : '#4a9e4a',
               borderColor: speechEnabled ? '#00ff41' : '#00ff4144',

@@ -377,11 +377,22 @@ export function VoiceModal({
       utt.voice = chosen;
       utt.lang = chosen.lang;
     } else {
-      utt.lang = language === 'tanglish' ? 'ta-IN' : 'en-IN';
-      const fallback = voicesList?.find(v =>
-        language === 'tanglish' ? v.lang.startsWith('ta') : v.lang === 'en-IN' || v.name.includes('India')
-      );
-      if (fallback) utt.voice = fallback;
+      // Tanglish uses English characters, so an Indian English voice reads it perfectly.
+      // Native Tamil voices (ta-IN) often stay silent if fed English characters on mobile.
+      const isTamilScript = /[\u0b80-\u0bff]/.test(clean);
+      if (language === 'tanglish' && !isTamilScript) {
+        utt.lang = 'en-IN';
+        const fallback = voicesList?.find(v => v.lang === 'en-IN' || v.name.includes('India'));
+        if (fallback) utt.voice = fallback;
+      } else if (isTamilScript) {
+        utt.lang = 'ta-IN';
+        const fallback = voicesList?.find(v => v.lang.startsWith('ta'));
+        if (fallback) utt.voice = fallback;
+      } else {
+        utt.lang = 'en-US';
+        const fallback = voicesList?.find(v => v.lang.startsWith('en'));
+        if (fallback) utt.voice = fallback;
+      }
     }
     utt.rate = 1.05;
     utt.pitch = 0.95;
@@ -418,7 +429,7 @@ export function VoiceModal({
       }));
 
       // Step 1: Ask the chat endpoint
-      const response = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/chat', {
+      const response = await fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text.trim(), history, connectedApps: sanitizedApps, language, userSalutation })
@@ -468,7 +479,7 @@ Instructions:
 - Do NOT output JSON.
 - Address the user as "${userSalutation}".`;
 
-            const summaryResp = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/chat', {
+            const summaryResp = await fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/chat', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ message: summaryPrompt, history: [], connectedApps: sanitizedApps, language, userSalutation })
@@ -505,11 +516,11 @@ Instructions:
               (async () => {
                 try {
                   if (targetApp.toLowerCase() === 'gmail') {
-                    await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/tokens/gmail', { method: 'DELETE' });
+                    await fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/tokens/gmail', { method: 'DELETE' });
                     localStorage.removeItem('jarvis_gmail_tokens');
                     if (setApps) setApps(prev => prev.filter(a => !a.isGmail && !a.name.toLowerCase().includes('gmail')));
                   } else if (targetApp.toLowerCase() === 'sheets' || targetApp.toLowerCase() === 'google sheets') {
-                    await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/tokens/sheets', { method: 'DELETE' });
+                    await fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/tokens/sheets', { method: 'DELETE' });
                     localStorage.removeItem('jarvis_sheets_tokens');
                     if (setApps) setApps(prev => prev.filter(a => !a.isSheets && !a.name.toLowerCase().includes('sheet')));
                   } else {
@@ -519,7 +530,7 @@ Instructions:
                       targetApp.toLowerCase().includes(app.name.toLowerCase())
                     );
                     if (matchingApp) {
-                      await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/apps/${matchingApp.id}`, { method: 'DELETE' });
+                      await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + ''}/api/apps/${matchingApp.id}`, { method: 'DELETE' });
                       if (setApps) setApps(prev => prev.filter(app => app.id !== matchingApp.id));
                     }
                   }
@@ -545,12 +556,22 @@ Instructions:
     }
   }, [isThinking, messages, language, userSalutation, speakReply, stopListening, show, startListening, apps, navigate, onClose, setApps]);
 
+  const unlockSpeech = () => {
+    if (window.speechSynthesis) {
+      const silentUtterance = new SpeechSynthesisUtterance('');
+      silentUtterance.volume = 0;
+      window.speechSynthesis.speak(silentUtterance);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    unlockSpeech();
     if (inputText.trim()) sendCommand(inputText.trim());
   };
 
   const handleMicToggle = () => {
+    unlockSpeech();
     if (isListening) {
       stopListening();
     } else {

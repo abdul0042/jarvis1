@@ -284,7 +284,7 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
 
   // Load token status from MongoDB on mount
   useEffect(() => {
-    fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/tokens/gmail')
+    fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/tokens/gmail')
       .then(r => r.json())
       .then(data => {
         if (data.success && data.token?.access_token) {
@@ -300,7 +300,7 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
         } catch {}
       });
 
-    fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/tokens/sheets')
+    fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/tokens/sheets')
       .then(r => r.json())
       .then(data => {
         if (data.success && data.token?.access_token) {
@@ -319,14 +319,14 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
   // Listen for postMessage from OAuth popups
   useEffect(() => {
     const onMessage = async (event) => {
-      if (event.origin !== (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '') return;
+      if (event.origin !== (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '') return;
       const data = event.data;
 
       // Gmail tokens
       if (data?.type === 'gmail-tokens' && data.tokens?.access_token) {
         let tokenData = data.tokens;
         try {
-          const profileRes = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/gmail/profile', {
+          const profileRes = await fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/gmail/profile', {
             headers: { Authorization: `Bearer ${data.tokens.access_token}` }
           });
           const profile = await profileRes.json();
@@ -335,7 +335,7 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
           console.error('Failed to fetch Gmail profile:', err);
         }
         // Save to MongoDB
-        fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/tokens/gmail', {
+        fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/tokens/gmail', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(tokenData),
@@ -350,7 +350,7 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
       // Sheets tokens
       if (data?.type === 'sheets-tokens' && data.tokens?.access_token) {
         // Save to MongoDB
-        fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/tokens/sheets', {
+        fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/tokens/sheets', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data.tokens),
@@ -369,14 +369,14 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
   const handleGmailConnect = () => {
     setGmailChecking(true);
     window.open(
-      (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/gmail/auth',
+      (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/gmail/auth',
       'Gmail OAuth',
       'width=520,height=620,left=200,top=100'
     );
   };
 
   const handleGmailDisconnect = () => {
-    fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/tokens/gmail', { method: 'DELETE' }).catch(console.error);
+    fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/tokens/gmail', { method: 'DELETE' }).catch(console.error);
     localStorage.removeItem(GMAIL_TOKEN_KEY);
     setGmailConnected(false);
   };
@@ -384,14 +384,14 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
   const handleSheetsConnect = () => {
     setSheetsChecking(true);
     window.open(
-      (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/sheets/auth',
+      (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/sheets/auth',
       'Sheets OAuth',
       'width=520,height=620,left=200,top=100'
     );
   };
 
   const handleSheetsDisconnect = () => {
-    fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/tokens/sheets', { method: 'DELETE' }).catch(console.error);
+    fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/tokens/sheets', { method: 'DELETE' }).catch(console.error);
     localStorage.removeItem(SHEETS_TOKEN_KEY);
     setSheetsConnected(false);
   };
@@ -403,7 +403,7 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
       onSave({
         id: 'gmail-oauth',
         name: 'Gmail',
-        baseUrl: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/gmail',
+        baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/gmail',
         apiKey: '',
         authHeader: '',
         authPrefix: '',
@@ -421,7 +421,7 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
       onSave({
         id: 'sheets-oauth',
         name: 'Google Sheets',
-        baseUrl: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/sheets',
+        baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/sheets',
         apiKey: '',
         authHeader: '',
         authPrefix: '',
@@ -464,9 +464,9 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
 
   const fillMock = (type) => {
     const presets = {
-      todo:    { name: 'JARVIS Todo List',       baseUrl: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/mock/todos',   apiKey: 'demo-todo-key-123',    description: 'Manages todo list tasks. Use tasks endpoint to GET, POST, and DELETE items.' },
-      finance: { name: 'JARVIS Finance Tracker', baseUrl: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/mock/finance', apiKey: 'demo-finance-key-456', description: 'Records financial transactions: income and expenses. Supports adding items.' },
-      weather: { name: 'JARVIS Weather',         baseUrl: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/mock/weather', apiKey: 'demo-weather-key-789', description: 'Provides real-time weather information and forecasting for cities.' },
+      todo:    { name: 'JARVIS Todo List',       baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/todos',   apiKey: 'demo-todo-key-123',    description: 'Manages todo list tasks. Use tasks endpoint to GET, POST, and DELETE items.' },
+      finance: { name: 'JARVIS Finance Tracker', baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/finance', apiKey: 'demo-finance-key-456', description: 'Records financial transactions: income and expenses. Supports adding items.' },
+      weather: { name: 'JARVIS Weather',         baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/weather', apiKey: 'demo-weather-key-789', description: 'Provides real-time weather information and forecasting for cities.' },
     };
     const p = presets[type];
     setName(p.name); setBaseUrl(p.baseUrl); setApiKey(p.apiKey);

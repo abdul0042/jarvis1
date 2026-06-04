@@ -421,7 +421,7 @@ function AppContent() {
 
   // Load history from MongoDB on mount
   useEffect(() => {
-    fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/history')
+    fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/history')
       .then(r => r.json())
       .then(data => {
         if (data.success && Array.isArray(data.history)) {
@@ -446,7 +446,7 @@ function AppContent() {
 
   // Load apps from MongoDB on mount
   useEffect(() => {
-    fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/apps')
+    fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/apps')
       .then(r => r.json())
       .then(data => {
         if (data.success) {

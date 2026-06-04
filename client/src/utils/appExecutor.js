@@ -1,4 +1,4 @@
-const BACKEND_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '';
+const BACKEND_URL = (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '';
 
 /**
  * Execute an action on a connected app via the backend proxy
@@ -10,7 +10,7 @@ export async function executeAction(app, action) {
   try {
     // ── Gmail: inject OAuth token from localStorage ──────────────────────────
     const extraHeaders = {};
-    const isGmail = app.isGmail || app.baseUrl?.includes('localhost:5000/api/gmail');
+    const isGmail = app.isGmail || app.baseUrl?.includes('jarvis1-92wq.onrender.com/api/gmail');
     if (isGmail) {
       try {
         const tokens = JSON.parse(localStorage.getItem('jarvis_gmail_tokens') || '{}');
@@ -22,7 +22,7 @@ export async function executeAction(app, action) {
       }
     }
     // ── Sheets: inject OAuth token from localStorage ──────────────────────────
-    const isSheets = app.isSheets || app.baseUrl?.includes('localhost:5000/api/sheets');
+    const isSheets = app.isSheets || app.baseUrl?.includes('jarvis1-92wq.onrender.com/api/sheets');
     if (isSheets) {
       try {
         const tokens = JSON.parse(localStorage.getItem('jarvis_sheets_tokens') || '{}');
