@@ -5,7 +5,7 @@ const router = express.Router();
 const oauth2Client = new google.auth.OAuth2(
   process.env.GMAIL_CLIENT_ID,
   process.env.GMAIL_CLIENT_SECRET,
-  'http://localhost:5000/api/gmail/callback'
+  (process.env.BACKEND_URL || 'http://localhost:5000') + '/api/gmail/callback'
 );
 
 // Step 1 - start OAuth flow
@@ -39,7 +39,7 @@ router.get('/callback', async (req, res) => {
           <div style="font-size:12px;opacity:0.6">Closing window...</div>
           <script>
             try {
-              window.opener.postMessage(${JSON.stringify({ type: 'sheets-tokens', tokens })}, 'http://localhost:5173');
+              window.opener.postMessage(${JSON.stringify({ type: 'sheets-tokens', tokens })}, process.env.FRONTEND_URL || '*');
             } catch(e) {}
             setTimeout(() => window.close(), 1000);
           </script>
@@ -58,7 +58,7 @@ router.get('/callback', async (req, res) => {
         <div style="font-size:12px;opacity:0.6">Closing window...</div>
         <script>
           try {
-            window.opener.postMessage(${JSON.stringify({ type: 'gmail-tokens', tokens })}, 'http://localhost:5173');
+            window.opener.postMessage(${JSON.stringify({ type: 'gmail-tokens', tokens })}, process.env.FRONTEND_URL || '*');
           } catch(e) {}
           setTimeout(() => window.close(), 1000);
         </script>
