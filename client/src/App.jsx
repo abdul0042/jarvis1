@@ -519,24 +519,7 @@ function AppContent() {
   const [jarvisAwake, setJarvisAwake] = useState(false); // topbar badge only
   const [voicesList, setVoicesList] = useState([]);
 
-  // Background Audio
-  const bgAudioRef = useRef(null);
 
-  useEffect(() => {
-    bgAudioRef.current = new Audio('/jarvis audio.mpeg');
-    bgAudioRef.current.volume = 0.4;
-  }, []);
-
-  useEffect(() => {
-    if (jarvisAwake) {
-      bgAudioRef.current?.play().catch(e => console.log('Audio autoplay blocked', e));
-    } else {
-      if (bgAudioRef.current) {
-        bgAudioRef.current.pause();
-        bgAudioRef.current.currentTime = 0;
-      }
-    }
-  }, [jarvisAwake]);
 
   // Voice engine list loader
   useEffect(() => {
