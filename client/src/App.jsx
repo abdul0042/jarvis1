@@ -9,6 +9,7 @@ import { useClapDetector } from './hooks/useClapDetector';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useWakeWord } from './hooks/useWakeWord';
 import { useGemini } from './hooks/useGemini';
+import { LoginPage } from './pages/LoginPage';
 
 /* ─── App-shell terminal styles ─── */
 const APP_STYLE = `
@@ -512,6 +513,7 @@ function AppContent() {
   const [userSalutation, setUserSalutation] = useLocalStorage('jarvis_user_salutation', 'Sir');
   const [wakeWordActive, setWakeWordActive] = useLocalStorage('jarvis_wake_word_active', true);
   const [wakeWordPhrase, setWakeWordPhrase] = useLocalStorage('jarvis_wake_word_phrase', 'Hey JARVIS');
+  const [isAuthenticated, setIsAuthenticated] = useLocalStorage('jarvis_authenticated', false);
 
   const [showVoiceModal, setShowVoiceModal] = useState(false);
   const [jarvisAwake, setJarvisAwake] = useState(false); // topbar badge only
@@ -663,6 +665,10 @@ function AppContent() {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
   };
 
+  if (!isAuthenticated) {
+    return <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />;
+  }
+
   return (
     <div className="app-shell">
       {/* Mobile overlay */}
@@ -734,6 +740,39 @@ function AppContent() {
             }}
           >
             🎙 LAUNCH ASSISTANT
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setIsAuthenticated(false)}
+            style={{
+              width: '100%',
+              marginBottom: 10,
+              background: 'transparent',
+              border: '1px solid rgba(255, 49, 49, 0.4)',
+              color: '#ff3131',
+              fontFamily: "'Share Tech Mono', monospace",
+              fontSize: 11,
+              padding: '6px 0',
+              cursor: 'pointer',
+              borderRadius: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 6,
+              boxShadow: '0 0 4px rgba(255, 49, 49, 0.1)',
+              transition: 'all 0.15s'
+            }}
+            onMouseEnter={(e) => { 
+              e.target.style.background = 'rgba(255, 49, 49, 0.08)'; 
+              e.target.style.boxShadow = '0 0 8px rgba(255, 49, 49, 0.3)'; 
+            }}
+            onMouseLeave={(e) => { 
+              e.target.style.background = 'transparent'; 
+              e.target.style.boxShadow = '0 0 4px rgba(255, 49, 49, 0.1)'; 
+            }}
+          >
+            🔒 SECURE LOGOUT
           </button>
 
           <div className="app-sidebar-footer-box">
