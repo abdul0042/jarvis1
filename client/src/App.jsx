@@ -419,6 +419,25 @@ function AppContent() {
   // Close mobile menu on route change
   useEffect(() => { setMobileMenuOpen(false); }, [location.pathname]);
 
+  // Global one-time speech synthesis unlocker for mobile browsers
+  useEffect(() => {
+    const unlockSpeechSynthesis = () => {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+      window.removeEventListener('touchstart', unlockSpeechSynthesis);
+      window.removeEventListener('click', unlockSpeechSynthesis);
+    };
+
+    window.addEventListener('touchstart', unlockSpeechSynthesis, { once: true });
+    window.addEventListener('click', unlockSpeechSynthesis, { once: true });
+
+    return () => {
+      window.removeEventListener('touchstart', unlockSpeechSynthesis);
+      window.removeEventListener('click', unlockSpeechSynthesis);
+    };
+  }, []);
+
   // Load history from MongoDB on mount
   useEffect(() => {
     fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/history')

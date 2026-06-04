@@ -497,10 +497,10 @@ Instructions:
         setTimeout(() => {
           if (uiActionToRun) {
             const UI_ACTION_MAP = {
-              navigate_dashboard:    '/',
-              navigate_chat:         '/chat',
+              navigate_dashboard: '/',
+              navigate_chat: '/chat',
               navigate_integrations: '/integrations',
-              navigate_settings:     '/settings',
+              navigate_settings: '/settings',
             };
 
             if (UI_ACTION_MAP[uiActionToRun]) {
@@ -591,7 +591,7 @@ Instructions:
 
   const fmt = ts => {
     const d = new Date(ts);
-    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   };
 
   return (

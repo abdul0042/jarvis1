@@ -758,7 +758,7 @@ export function Chat({
   const speakText = (text, onEndCallback) => {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel(); // Stop any ongoing speech
-    
+
     // Clean text: strip out markdown backticks, asterisks, URLs, etc. so it sounds cleaner.
     let cleanText = text
       .replace(/```[\s\S]*?```/g, '') // remove code blocks
@@ -774,7 +774,7 @@ export function Chat({
     if (onEndCallback) {
       utterance.onend = onEndCallback;
     }
-    
+
     // Try to find selected voice by name
     const chosenVoice = voicesList.find(v => v.name === selectedVoiceName);
     if (chosenVoice) {
@@ -797,11 +797,11 @@ export function Chat({
       } else {
         utterance.lang = 'en-US';
         // Prioritize Indian English voices first if available, then fallback
-        const preferredVoice = voicesList.find(voice => 
-          voice.lang === 'en-IN' || 
+        const preferredVoice = voicesList.find(voice =>
+          voice.lang === 'en-IN' ||
           voice.name.includes('India') ||
-          voice.name.includes('Google US English') || 
-          voice.name.includes('Microsoft Zira') || 
+          voice.name.includes('Google US English') ||
+          voice.name.includes('Microsoft Zira') ||
           voice.lang === 'en-US'
         );
         if (preferredVoice) {
@@ -810,10 +810,10 @@ export function Chat({
         }
       }
     }
-    
+
     utterance.rate = 1.05;
     utterance.pitch = 0.95;
-    
+
     window.speechSynthesis.speak(utterance);
   };
 
@@ -858,7 +858,7 @@ export function Chat({
 
   const fmt = (ts) => {
     const d = new Date(ts);
-    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
   };
 
   return (
@@ -896,14 +896,14 @@ export function Chat({
           >
             {clapActive ? '[ 👏 CLAP: ACTIVE ]' : '[ 👏 CLAP: MUTED ]'}
           </button>
-          <button 
-            className="ch-clear-btn" 
-            type="button" 
+          <button
+            className="ch-clear-btn"
+            type="button"
             onClick={() => {
               unlockSpeech();
               setSpeechEnabled(!speechEnabled);
             }}
-            style={{ 
+            style={{
               color: speechEnabled ? '#00ff41' : '#4a9e4a',
               borderColor: speechEnabled ? '#00ff41' : '#00ff4144',
               boxShadow: speechEnabled ? '0 0 6px #00ff4133' : 'none'
@@ -992,8 +992,8 @@ export function Chat({
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <div className="ch-prefix">{isUser ? '[USER]' : '[JARVIS]'}</div>
                 {!isUser && (
-                  <button 
-                    onClick={() => speakText(msg.text)} 
+                  <button
+                    onClick={() => speakText(msg.text)}
                     title="Speak text"
                     style={{
                       background: 'transparent',
@@ -1078,7 +1078,7 @@ export function Chat({
                         </div>
                       </div>
                     </div>
-                    
+
                     <div style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -1117,7 +1117,7 @@ export function Chat({
                       >
                         [ 📥 VIEW/DOWNLOAD PDF ]
                       </a>
-                      
+
                       <a
                         href={sheetUrl}
                         target="_blank"
@@ -1170,7 +1170,7 @@ export function Chat({
                           <div className="ch-raw-section-title">// RESPONSE HEADERS</div>
                           <div className="ch-raw-code">
                             {Object.entries(msg.apiResponse.headers)
-                              .filter(([k]) => !['set-cookie','connection','transfer-encoding'].includes(k))
+                              .filter(([k]) => !['set-cookie', 'connection', 'transfer-encoding'].includes(k))
                               .map(([k, v]) => `${k}: ${v}`)
                               .join('\n')}
                           </div>
@@ -1232,7 +1232,7 @@ export function Chat({
           <VoiceInput
             isListening={false}
             onStart={handleStartListening}
-            onStop={() => {}}
+            onStop={() => { }}
             error={null}
             browserSupported={true}
           />
