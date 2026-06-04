@@ -39,7 +39,7 @@ router.get('/callback', async (req, res) => {
           <div style="font-size:12px;opacity:0.6">Closing window...</div>
           <script>
             try {
-              window.opener.postMessage(${JSON.stringify({ type: 'sheets-tokens', tokens })}, process.env.FRONTEND_URL || '*');
+              window.opener.postMessage(${JSON.stringify({ type: 'sheets-tokens', tokens })}, process.env.FRONTEND_URL || 'https://jarvis-vbos.vercel.app');
             } catch(e) {}
             setTimeout(() => window.close(), 1000);
           </script>
@@ -58,7 +58,7 @@ router.get('/callback', async (req, res) => {
         <div style="font-size:12px;opacity:0.6">Closing window...</div>
         <script>
           try {
-            window.opener.postMessage(${JSON.stringify({ type: 'gmail-tokens', tokens })}, process.env.FRONTEND_URL || '*');
+            window.opener.postMessage(${JSON.stringify({ type: 'gmail-tokens', tokens })}, process.env.FRONTEND_URL || 'https://jarvis-vbos.vercel.app');
           } catch(e) {}
           setTimeout(() => window.close(), 1000);
         </script>

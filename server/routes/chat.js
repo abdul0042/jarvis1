@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
     // ── SUMMARY MODE: use a clean, lightweight interpreter prompt ────────────
     if (isSummary) {
       const summaryModel = genAI.getGenerativeModel({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-2.5-flash',
         systemInstruction: `You are JARVIS. You have already executed an API action and received data.
 Your only job is to read the data in the user message and answer their question in 1-2 sentences.
 Never output JSON. Never say "Done". Never perform new actions. Just answer directly.
