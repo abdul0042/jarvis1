@@ -29,6 +29,11 @@ export function LoginPage({ onLoginSuccess }) {
 
       {/* Login Box */}
       <div style={styles.loginBox}>
+        {/* Futuristic Eye Logo */}
+        <div style={styles.logoWrapper}>
+          <img src="/logineye.png" alt="security eye" style={styles.logoImage} />
+        </div>
+
         {/* Futuristic Header Brackets */}
         <div style={styles.headerBracket}>┌─[ ACCESS RESTRICTED ]─┐</div>
         
@@ -222,5 +227,23 @@ const styles = {
     color: 'rgba(0, 255, 65, 0.4)',
     marginTop: '15px',
     letterSpacing: '0.05em',
+  },
+  logoWrapper: {
+    width: '100px',
+    height: '100px',
+    borderRadius: '50%',
+    border: '2px solid rgba(0, 255, 65, 0.4)',
+    boxShadow: '0 0 15px rgba(0, 255, 65, 0.3)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    marginBottom: '20px',
+    backgroundColor: '#000000',
+  },
+  logoImage: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
   },
 };
