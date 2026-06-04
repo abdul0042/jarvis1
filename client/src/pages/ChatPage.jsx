@@ -467,6 +467,16 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
             }
           }
 
+          // CipherGate: workers list
+          if (ep.includes('/workers') && method === 'GET') {
+            const workers = Array.isArray(data) ? data : (data?.workers || data?.data);
+            if (Array.isArray(workers)) {
+              if (workers.length === 0) return `No workers found on CipherGate, ${sal}.`;
+              const names = workers.map(w => w.name).join(', ');
+              return `Sir, the worker names on CipherGate are: ${names}.`;
+            }
+          }
+
           // WooCommerce: products list
           if (ep.includes('/products') && method === 'GET') {
             const products = Array.isArray(data) ? data : data?.products;

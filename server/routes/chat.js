@@ -72,15 +72,16 @@ IMPORTANT: Never mention internal implementation details like localStorage, acce
 ## APP-SPECIFIC HINTS
 - Orders API (WooCommerce, Billzzy, F3): To query, count, or generate reports for orders on apps like WooCommerce, Billzzy, or F3, ALWAYS use the WooCommerce REST API standard query parameters 'after', 'before', 'per_page=100', and 'status=any' to ensure all orders of any status are retrieved without pagination limits. For example, to get orders for today (${localDateString}) from WooCommerce or Billzzy, construct the endpoint as: 'GET /orders?after=${localDateString}T00:00:00&before=${localDateString}T23:59:59&per_page=100&status=any'. Billzzy is fully WooCommerce-compatible and supports the exact same endpoint and date filter parameters.
 - Google Sheets API: Google Sheets integration. Can create new spreadsheets automatically without asking the user for a spreadsheetId. When creating a WooCommerce or Billzzy report, fetch the orders first (using per_page=100 and status=any), then send them to POST /woo-report with a body: { orders: [...], title: "Report title" } to handle creating the spreadsheet and appending the orders in a single backend call. Endpoints: POST /woo-report — generate a WooCommerce orders report (body: { orders, title }), POST /create — create a new spreadsheet (body: title), POST /append — append rows to a sheet (body: spreadsheetId, range, values), GET /read — read sheet data (body: spreadsheetId, range).
-- CipherGate API (Worker Attendance & HR): CipherGate manages workers for a given subdomain. Key endpoints:
-  * GET /worker/all — returns a list of ALL workers with their id, name, status, and today's attendance. Use this to look up any specific worker by name (e.g. "is Abdul present?") — fetch all, then filter the result by name.
+- CipherGate API (Worker Attendance & HR): CipherGate is a worker management system hosted at ciphergate.techvaseegrah.com (which belongs to TechVaseegrah company). The internal org/tenant name in CipherGate is "vaseegrah-veda". When the user says "techvaseegrah workers" or "vaseegrah veda workers" or "ciphergate workers" — they all mean the same company. Key endpoints:
+  * GET /workers — returns ALL workers (name, status, department, salary, attendance). This is the main endpoint — use this for listing workers or checking attendance by name. No subdomain filter needed.
   * GET /worker/attendance — today's attendance for the authenticated worker.
   * GET /worker/my-report — performance report for the authenticated worker.
   * GET /worker/leaderboard — leaderboard rankings (payload: { filter: "all" | "weekly" | "monthly" }).
-  * GET /worker/top-teams-earnings — top team earnings for a subdomain (payload: { subdomain: "techvaseegrah" }).
-  * GET /worker/fines — fines list (payload: { date: "YYYY-MM-DD" }).
-  * GET /worker/history — activity history.
-  IMPORTANT: To check if a specific worker (e.g. "Abdul") is present/absent, ALWAYS call GET /worker/all first — the response contains attendance info for every worker. Filter the result by name to answer the question.
+  * GET /worker/top-teams-earnings — top team earnings (payload: { subdomain: "vaseegrah-veda" }).
+  * GET /worker/my-fines — fines list (payload: { fromDate: "YYYY-MM-DD" }).
+  * GET /worker/history — activity history (payload: { limit: 20, page: 1 }).
+  * GET /worker/tickets — support tickets (payload: { subdomain: "vaseegrah-veda" }).
+  IMPORTANT: To check if a specific worker (e.g. "Abdul") is present/absent, call GET /workers and filter by name. Auth header is "x-api-key" with no prefix (raw token only).
 
 ## HOW TO HANDLE COMMANDS
 When the user gives an action command targeting an EXTERNAL APP (e.g. "send email", "get orders", "check inbox"):
