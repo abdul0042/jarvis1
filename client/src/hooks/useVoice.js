@@ -59,18 +59,16 @@ export function useVoice() {
       return;
     }
 
-    // Check mic permission — if not granted, show the permission modal
+    // Only block if mic is explicitly denied — browser handles 'prompt' natively
     if (navigator.permissions) {
       try {
         const status = await navigator.permissions.query({ name: 'microphone' });
         if (status.state === 'denied') {
+          // Mic is blocked — show our custom permission guidance modal
           window.dispatchEvent(new CustomEvent('vbos-request-permissions'));
           return;
         }
-        if (status.state === 'prompt') {
-          window.dispatchEvent(new CustomEvent('vbos-request-permissions'));
-          return;
-        }
+        // 'prompt' or 'granted' → proceed normally, browser will ask if needed
       } catch { /* permissions API not supported — try anyway */ }
     }
 
