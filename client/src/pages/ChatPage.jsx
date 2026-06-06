@@ -115,7 +115,13 @@ export function ChatPage({ apps, setApps, history, setHistory, gemini }) {
       const lastAction = lastActionRaw ? JSON.parse(lastActionRaw).slice(-1)[0] : null;
       const lastActionText = lastAction ? lastAction.userMessage : 'none';
 
-      const prompt = `You are JARVIS, the AI assistant from Iron Man. Generate a single short greeting message for the user named Spidey.
+      let salutation = 'Sir';
+      try {
+        const raw = localStorage.getItem('jarvis_user_salutation');
+        if (raw) salutation = JSON.parse(raw);
+      } catch (e) {}
+
+      const prompt = `You are VBOS, the AI assistant. Generate a single short greeting message for the user named ${salutation}.
 
 Context:
 - Time of day: ${timeOfDay}
@@ -125,17 +131,17 @@ Context:
 
 Rules:
 - Max 2 sentences
-- Sound like JARVIS from Iron Man — intelligent, calm, slightly witty
+- Sound like VBOS — intelligent, calm, slightly witty
 - Reference the time of day naturally
 - If there are connected apps mention one casually
 - If there was a recent command reference it subtly
 - Never say "How can I help you" or "What can I do for you"
 - Never be generic or robotic
-- Feel personal to Spidey specifically
+- Feel personal to ${salutation} specifically
 - Examples of good tone:
-  "Good evening, Spidey. WooCommerce is running clean — shall we pick up where we left off?"
+  "Good evening, ${salutation}. WooCommerce is running clean — shall we pick up where we left off?"
   "Morning. Your store's been quiet overnight. Ready to change that?"
-  "Late night again, Spidey. Gmail and WooCommerce are standing by."
+  "Late night again, ${salutation}. Gmail and WooCommerce are standing by."
   "Good afternoon. Last I checked you were looking at orders — want to continue?"
 
 Respond with ONLY the greeting. No JSON. No extra text.`;
@@ -156,10 +162,10 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
           })
         });
         const data = await response.json();
-        const greetingText = data.text || data.rawResponse || "Standing by, Spidey.";
+        const greetingText = data.text || data.rawResponse || `Standing by, ${salutation}.`;
         setMessages([{ id: 'welcome', sender: 'jarvis', text: greetingText, timestamp: Date.now(), isGreeting: true }]);
       } catch (err) {
-        setMessages([{ id: 'welcome', sender: 'jarvis', text: "Standing by, Spidey.", timestamp: Date.now(), isGreeting: true }]);
+        setMessages([{ id: 'welcome', sender: 'jarvis', text: `Standing by, ${salutation}.`, timestamp: Date.now(), isGreeting: true }]);
       }
     };
 
@@ -186,6 +192,14 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
 
   const handleNewMessage = async (text, language = 'english') => {
     setIsLoading(true); // keep spinner alive for the full chain
+
+    // Retrieve user salutation from local storage
+    let salutation = 'Sir';
+    try {
+      const raw = localStorage.getItem('jarvis_user_salutation');
+      if (raw) salutation = JSON.parse(raw);
+    } catch (e) { }
+
     let currentResponse = await sendMessage(text, apps, false, language);
 
     // ── Handle UI (in-app) actions ──────────────────────────────────────────
@@ -194,10 +208,10 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
       const explanation = currentResponse.explanation;
 
       const UI_ACTION_MAP = {
-        navigate_dashboard:    { path: '/',              label: 'Navigating to Dashboard...' },
-        navigate_chat:         { path: '/chat',          label: 'Navigating to Chat Terminal...' },
-        navigate_integrations: { path: '/integrations',  label: 'Opening Integrations...' },
-        navigate_settings:     { path: '/settings',      label: 'Opening Settings...' },
+        navigate_dashboard: { path: '/', label: 'Navigating to Dashboard...' },
+        navigate_chat: { path: '/chat', label: 'Navigating to Chat Terminal...' },
+        navigate_integrations: { path: '/integrations', label: 'Opening Integrations...' },
+        navigate_settings: { path: '/settings', label: 'Opening Settings...' },
       };
 
       if (UI_ACTION_MAP[uiAction]) {
@@ -236,12 +250,12 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
         setIsLoading(false);
         return;
       }
- 
+
       if (uiAction === 'disconnect_app') {
         const targetApp = currentResponse.target_app || '';
         addMessageToUi({ sender: 'system', text: `Disconnecting ${targetApp || 'app'}...` });
         addMessageToUi({ sender: 'jarvis', text: explanation || `Disconnecting ${targetApp || 'app'}, Sir.` });
-        
+
         setIsLoading(true);
         setTimeout(async () => {
           try {
@@ -322,7 +336,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
         const resultString =
           rawResultString.length > MAX_RESPONSE_CHARS
             ? rawResultString.substring(0, MAX_RESPONSE_CHARS) +
-              `\n...[Response truncated, ${rawResultString.length} total chars]`
+            `\n...[Response truncated, ${rawResultString.length} total chars]`
             : rawResultString;
 
         console.log('[DEBUG] resultString:', resultString);
@@ -336,9 +350,9 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
           if (isAuthError) {
             const isGoogleApp = matchingApp.name.toLowerCase().includes('gmail') || matchingApp.name.toLowerCase().includes('sheet');
             if (isGoogleApp) {
-              finalMsg = `Gmail/Sheets access token has expired, Spidey. Please go to Integrations, disconnect, and reconnect it to refresh your credentials.`;
+              finalMsg = `Gmail/Sheets access token has expired, ${salutation}. Please go to Integrations, disconnect, and reconnect it to refresh your credentials.`;
             } else {
-              finalMsg = `Authentication failed for ${matchingApp.name}, Spidey. Please verify your API key, consumer key/secret, or token credentials in Integrations settings.`;
+              finalMsg = `Authentication failed for ${matchingApp.name}, ${salutation}. Please verify your API key, consumer key/secret, or token credentials in Integrations settings.`;
             }
           } else {
             finalMsg = `The request to ${matchingApp.name} failed: ${errMsg}`;
@@ -361,12 +375,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
           return;
         }
 
-        // Read salutation for responses
-        let salutation = 'Sir';
-        try {
-          const raw = localStorage.getItem('jarvis_user_salutation');
-          if (raw) salutation = JSON.parse(raw);
-        } catch (e) {}
+
 
         // ── Build reply directly from data — no Gemini needed for known shapes ──
         const buildDirectResponse = (action, data, sal) => {
@@ -412,12 +421,12 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
             // 3. WooCommerce: array directly
             // 4. Generic:     { orders: [...] } or { data: [...] }
             const rawOrders =
-              Array.isArray(data)           ? data :
-              Array.isArray(data?.data)     ? data.data :
-              Array.isArray(data?.orders)   ? data.orders :
-              Array.isArray(data?.results)  ? data.results :
-              Array.isArray(data?.items)    ? data.items :
-              null;
+              Array.isArray(data) ? data :
+                Array.isArray(data?.data) ? data.data :
+                  Array.isArray(data?.orders) ? data.orders :
+                    Array.isArray(data?.results) ? data.results :
+                      Array.isArray(data?.items) ? data.items :
+                        null;
 
             const isCountRequest = /count|how many|number of|total|printed/i.test(text);
             if (Array.isArray(rawOrders)) {
@@ -568,10 +577,10 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
         // Detect if this was an orders fetch so we can use a richer prompt
         const isOrdersEndpoint = (action.endpoint || '').toLowerCase().includes('/orders');
         const ordersData =
-          Array.isArray(apiResult.data)         ? apiResult.data :
-          Array.isArray(apiResult.data?.data)   ? apiResult.data.data :
-          Array.isArray(apiResult.data?.orders) ? apiResult.data.orders :
-          null;
+          Array.isArray(apiResult.data) ? apiResult.data :
+            Array.isArray(apiResult.data?.data) ? apiResult.data.data :
+              Array.isArray(apiResult.data?.orders) ? apiResult.data.orders :
+                null;
         const ordersCount = ordersData ? ordersData.length : 0;
 
         const isF3 = matchingApp.name.toLowerCase().includes('f3');
@@ -683,15 +692,6 @@ Instructions:
     <div className="ct-root">
       <div className="ct-inner">
 
-        {/* Title bar */}
-        <div className="ct-title-bar">
-          <span style={{ color: '#4a9e4a' }}>┌──[</span>
-          <span style={{ color: '#00ff41' }}>JARVIS // CHAT TERMINAL</span>
-          <span style={{ color: '#4a9e4a' }}>]</span>
-          <span style={{ flex: 1, borderTop: '1px solid #00ff4130' }} />
-          <span style={{ color: '#4a9e4a', fontSize: 11 }}>GEMINI ACTIVE</span>
-        </div>
-
         {/* No-apps warning */}
         {apps.length === 0 && (
           <div className="ct-warn">
@@ -715,20 +715,6 @@ Instructions:
           initialInputText={location.state?.autoFillCommand || ''}
         />
 
-        {/* footer */}
-        <div style={{
-          marginTop: 16,
-          borderTop: '1px solid #00ff4122',
-          paddingTop: 10,
-          fontSize: 10,
-          color: '#4a9e4a',
-          letterSpacing: '0.12em',
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}>
-          <span>JARVIS // SECURE LOCAL PROXY ACTIVE</span>
-          <span>PORT: 5000 // GEMINI API CONNECTED</span>
-        </div>
       </div>
     </div>
   );

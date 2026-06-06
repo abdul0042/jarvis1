@@ -713,13 +713,13 @@ function NeuralLinkPanel({ className = "hud-col-5" }) {
           <div className="hud-crosshair-v" />
           <div className="hud-crosshair-h" />
           <div className="hud-reticle" />
-          <video 
-            src="/skull.mp4" 
-            className="hud-feed-img" 
-            autoPlay 
-            loop 
-            muted 
-            playsInline 
+          <video
+            src="/skull.mp4"
+            className="hud-feed-img"
+            autoPlay
+            loop
+            muted
+            playsInline
           />
           <div className="hud-feed-badge">LINK_STABILITY [{signal}%]</div>
           <div className="hud-feed-telemetry">
@@ -743,7 +743,7 @@ function LiveFeedPanel({ apps }) {
 
   const fmtTs = () => {
     const d = new Date();
-    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
   };
 
   const addEvent = (appName, icon, message, level = 'info') => {
@@ -792,10 +792,10 @@ function LiveFeedPanel({ apps }) {
         endpoint: '/orders?per_page=5&orderby=date&order=desc',
         parse: (data) => {
           const rawOrders =
-            Array.isArray(data)         ? data :
-            Array.isArray(data?.data)   ? data.data :
-            Array.isArray(data?.orders) ? data.orders :
-            [];
+            Array.isArray(data) ? data :
+              Array.isArray(data?.data) ? data.data :
+                Array.isArray(data?.orders) ? data.orders :
+                  [];
           const total = data?.total ?? data?.total_orders ?? data?.total_count ?? rawOrders.length;
           const latest = rawOrders[0];
           return { total, latest };
@@ -1016,7 +1016,7 @@ function LiveFeedPanel({ apps }) {
             </div>
 
             {/* All events scrollable */}
-            <div 
+            <div
               className="cyber-scroll-container"
               style={{ flex: 1, overflowY: 'auto', padding: '8px 0', scrollbarWidth: 'thin', scrollbarColor: '#00ff4133 transparent' }}
             >
@@ -1053,7 +1053,7 @@ function LiveFeedPanel({ apps }) {
               fontSize: 9, color: '#2d6b2d',
               display: 'flex', justifyContent: 'space-between', flexShrink: 0,
             }}>
-              <span>JARVIS // LIVE APP FEED MONITOR</span>
+              <span>VBOS // LIVE APP FEED MONITOR</span>
               <span>AUTO-REFRESH: 30s INTERVAL</span>
             </div>
           </div>
@@ -1083,7 +1083,7 @@ function ConnectedAppsPanel({ apps, setApps }) {
     try {
       const ok = await testConnection(app);
       const newStatus = ok ? 'connected' : 'error';
-      
+
       if (app.id && app.id !== 'gmail-oauth' && app.id !== 'sheets-oauth') {
         await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + ''}/api/apps/${app.id}/status`, {
           method: 'PUT',
@@ -1119,7 +1119,7 @@ function ConnectedAppsPanel({ apps, setApps }) {
       <CornerAccents />
       <PanelHeader label="CONNECTED APPS" dotActive={apps.length > 0} subLabel="NODE MANAGER" />
       <div className="hud-body" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        
+
         {/* Surveillance Feed Mock Camera */}
         <div className="hud-cam-container" style={{ marginBottom: 0 }}>
           <div className="hud-cam-overlay-grid" />
@@ -1133,14 +1133,14 @@ function ConnectedAppsPanel({ apps, setApps }) {
         </div>
 
         {/* Connected Apps List */}
-        <div 
+        <div
           className="cyber-scroll-container"
-          style={{ 
-            maxHeight: '180px', 
-            overflowY: 'auto', 
-            paddingRight: '4px', 
-            scrollbarWidth: 'thin', 
-            scrollbarColor: 'rgba(0, 255, 65, 0.2) transparent' 
+          style={{
+            maxHeight: '180px',
+            overflowY: 'auto',
+            paddingRight: '4px',
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'rgba(0, 255, 65, 0.2) transparent'
           }}
         >
           {apps.length === 0 ? (
@@ -1150,13 +1150,13 @@ function ConnectedAppsPanel({ apps, setApps }) {
             </div>
           ) : (
             apps.map(app => (
-              <div 
-                key={app.id} 
+              <div
+                key={app.id}
                 className={`cyber-app-card ${app.status === 'connected' ? 'status-connected' : app.status === 'error' ? 'status-error' : ''}`}
               >
                 {/* Left: status dot & app info */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden', flex: 1 }}>
-                  <span 
+                  <span
                     style={{
                       width: '6px',
                       height: '6px',
@@ -1164,7 +1164,7 @@ function ConnectedAppsPanel({ apps, setApps }) {
                       backgroundColor: app.status === 'connected' ? '#00ff41' : app.status === 'error' ? '#ff3131' : '#888',
                       boxShadow: app.status === 'connected' ? '0 0 6px #00ff41' : app.status === 'error' ? '0 0 6px #ff3131' : 'none',
                       flexShrink: 0
-                    }} 
+                    }}
                   />
                   <span style={{ fontSize: '11px', fontWeight: 'bold', color: app.status === 'error' ? '#ff3131' : '#00ff41', flexShrink: 0, letterSpacing: '0.04em' }}>
                     {app.name.toUpperCase()}
@@ -1187,8 +1187,8 @@ function ConnectedAppsPanel({ apps, setApps }) {
                   <Link to="/settings">
                     <button className="cyber-btn" style={{ padding: '3px 8px', fontSize: '9px' }}>EDIT</button>
                   </Link>
-                  <button 
-                    className="cyber-btn cyber-btn-red" 
+                  <button
+                    className="cyber-btn cyber-btn-red"
                     onClick={() => handleDelete(app.id)}
                     style={{ padding: '3px 8px', fontSize: '9px' }}
                   >
@@ -1231,7 +1231,7 @@ function RecentActionsPanel({ history }) {
               const method = log.aiAction?.method || 'MSG';
               const endpoint = log.aiAction?.endpoint || '/';
               const status = log.result?.status ? `${log.result.status} ${ok ? 'OK' : 'ERR'}` : 'N/A';
-              
+
               let methodClass = 'method-get';
               if (method === 'POST') methodClass = 'method-post';
               if (method === 'DELETE') methodClass = 'method-delete';
@@ -1288,12 +1288,12 @@ function QuickCommandsPanel({ history }) {
           </div>
         )}
 
-        <div style={{ 
-          marginTop: 14, 
-          borderTop: '1px solid rgba(0, 255, 65, 0.15)', 
-          paddingTop: 12, 
-          display: 'flex', 
-          flexDirection: 'column', 
+        <div style={{
+          marginTop: 14,
+          borderTop: '1px solid rgba(0, 255, 65, 0.15)',
+          paddingTop: 12,
+          display: 'flex',
+          flexDirection: 'column',
           gap: 10,
           position: 'relative',
           zIndex: 1
@@ -1322,46 +1322,6 @@ export function Dashboard({ apps, setApps, history }) {
     <div className="db-root">
       <div className="db-inner">
 
-        {/* Matrix Header */}
-        <div style={{
-          borderBottom: '1px solid rgba(0, 255, 65, 0.35)',
-          paddingBottom: 12,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: 12,
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ 
-              fontSize: 14, 
-              fontWeight: 'bold', 
-              letterSpacing: '0.18em', 
-              color: '#00ff41',
-              textShadow: '0 0 6px rgba(0, 255, 65, 0.4)'
-            }}>
-              JARVIS // CONTROL MATRIX
-            </span>
-            <span style={{ 
-              border: '1px solid rgba(0, 255, 65, 0.3)',
-              fontSize: 9, 
-              padding: '1px 5px',
-              color: '#4a9e4a'
-            }}>
-              v1.0.0
-            </span>
-          </div>
-          <div style={{ 
-            fontSize: 10, 
-            color: '#4a9e4a', 
-            display: 'flex', 
-            gap: 16 
-          }}>
-            <span>PORT: 5000 ACTIVE</span>
-            <span>GEMINI: SECURE</span>
-          </div>
-        </div>
-
         {/* HUD Matrix Layout Grid */}
         <div className="hud-grid">
           {/* Radar Scanning Panel */}
@@ -1375,7 +1335,7 @@ export function Dashboard({ apps, setApps, history }) {
 
           <ConnectedAppsPanel apps={apps} setApps={setApps} />
           <LiveFeedPanel apps={apps} />
-          
+
           {/* Skull Box (Neural Link Panel) */}
           <NeuralLinkPanel className="hud-col-5" />
 
@@ -1383,21 +1343,6 @@ export function Dashboard({ apps, setApps, history }) {
           <QuickCommandsPanel history={history} />
         </div>
 
-        {/* Footer info bar */}
-        <div style={{
-          borderTop: '1px solid rgba(0, 255, 65, 0.15)',
-          paddingTop: 10,
-          fontSize: 10,
-          color: '#4a9e4a',
-          letterSpacing: '0.12em',
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: 10
-        }}>
-          <span>JARVIS // SECURE LOCAL PROXY ACTIVE</span>
-          <span>PORT: 5000 // GEMINI API CONNECTED</span>
-        </div>
       </div>
     </div>
   );

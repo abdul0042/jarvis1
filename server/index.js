@@ -3,16 +3,16 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 
-const mongoose                = require('mongoose');
-const { connectDB }           = require('./db/connect');
-const { ConnectedApp }        = require('./models/ConnectedApp');
-const { ChatHistory }         = require('./models/ChatHistory');
-const { OAuthToken }          = require('./models/OAuthToken');
+const mongoose = require('mongoose');
+const { connectDB } = require('./db/connect');
+const { ConnectedApp } = require('./models/ConnectedApp');
+const { ChatHistory } = require('./models/ChatHistory');
+const { OAuthToken } = require('./models/OAuthToken');
 
 const executeRouter = require('./routes/execute');
-const chatRouter    = require('./routes/chat');
-const gmailRoutes   = require('./routes/gmail');
-const sheetsRoutes  = require('./routes/sheets');
+const chatRouter = require('./routes/chat');
+const gmailRoutes = require('./routes/gmail');
+const sheetsRoutes = require('./routes/sheets');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,9 +28,9 @@ app.use(morgan('dev'));
 
 // Main Routes
 app.use('/api/execute', executeRouter);
-app.use('/api/chat',    chatRouter);
-app.use('/api/gmail',   gmailRoutes);
-app.use('/api/sheets',  sheetsRoutes);
+app.use('/api/chat', chatRouter);
+app.use('/api/gmail', gmailRoutes);
+app.use('/api/sheets', sheetsRoutes);
 
 // --- In-Memory Database for Mock APIs ---
 let mockTodos = [
@@ -115,12 +115,12 @@ app.post('/api/mock/finance', (req, res) => {
 app.get('/api/mock/weather', (req, res) => {
   const city = req.query.city || 'San Francisco';
   console.log(`[Mock Weather API] GET /weather?city=${city}`);
-  
+
   // Return some fake weather details
   const weathers = ['Sunny', 'Partly Cloudy', 'Rainy', 'Windy', 'Overcast'];
   const randomIndex = Math.floor(Math.random() * weathers.length);
   const temp = Math.floor(Math.random() * 15) + 15; // 15 to 30 C
-  
+
   res.json({
     success: true,
     city: city,
@@ -258,7 +258,7 @@ app.delete('/api/tokens/:service', async (req, res) => {
 // --- Test Connection / Health Check ---
 app.get('/api/health', (req, res) => {
   const dbStatus = mongoose.connection.readyState;
-  const dbLabel  = ['disconnected', 'connected', 'connecting', 'disconnecting'][dbStatus] || 'unknown';
+  const dbLabel = ['disconnected', 'connected', 'connecting', 'disconnecting'][dbStatus] || 'unknown';
   res.json({ status: 'ok', time: new Date(), db: dbLabel });
 });
 

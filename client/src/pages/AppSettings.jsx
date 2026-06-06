@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SETTINGS_STYLE = `
@@ -147,6 +147,49 @@ const SETTINGS_STYLE = `
     display: flex;
     justify-content: space-between;
   }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @media (max-width: 767px) {
+    .aps-root {
+      padding: 10px;
+    }
+    .aps-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      padding-bottom: 18px;
+    }
+    .aps-info {
+      max-width: 100%;
+    }
+    .aps-control {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .aps-control .aps-btn {
+      flex: 1 1 0%;
+      text-align: center;
+      padding: 8px 12px;
+    }
+    .aps-input, .aps-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      padding: 8px 12px;
+      box-sizing: border-box;
+    }
+    .aps-panel-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      padding: 12px 14px;
+    }
+  }
 `;
 
 export function AppSettings({
@@ -167,6 +210,17 @@ export function AppSettings({
   setWakeWordPhrase
 }) {
   const navigate = useNavigate();
+  const [savedStatus, setSavedStatus] = useState(null); // null | 'saving' | 'saved'
+
+  const handleSave = () => {
+    setSavedStatus('saving');
+    setTimeout(() => {
+      setSavedStatus('saved');
+      setTimeout(() => {
+        setSavedStatus(null);
+      }, 3000);
+    }, 800);
+  };
 
   useEffect(() => {
     const id = 'aps-style';
@@ -180,14 +234,7 @@ export function AppSettings({
 
   return (
     <div className="aps-root">
-      <div className="aps-title-bar">
-        <span style={{ color: '#4a9e4a' }}>┌──[</span>
-        <span style={{ color: '#00ff41' }}>JARVIS // SYSTEM SETTINGS</span>
-        <span style={{ color: '#4a9e4a' }}>]</span>
-        <span style={{ flex: 1, borderTop: '1px solid #00ff4130' }} />
-      </div>
-
-      <div className="aps-panel">
+      <div className="aps-panel" style={{ marginTop: 10 }}>
         <div className="aps-panel-header">
           <span>// ASSISTANT & AUDIO OPTIONS</span>
         </div>
@@ -197,7 +244,7 @@ export function AppSettings({
           <div className="aps-row">
             <div className="aps-info">
               <span className="aps-label">USER SALUTATION Preference</span>
-              <span className="aps-desc">Define the name or title JARVIS uses to address you (e.g. Boss, Captain, Master Navas).</span>
+              <span className="aps-desc">Define the name or title VBOS uses to address you (e.g. Boss, Captain, Master Navas).</span>
             </div>
             <div className="aps-control">
               <input
@@ -238,7 +285,7 @@ export function AppSettings({
           <div className="aps-row">
             <div className="aps-info">
               <span className="aps-label">TEXT TO SPEECH (TTS)</span>
-              <span className="aps-desc">Toggle whether JARVIS reads chatbot replies out loud using audio speakers.</span>
+              <span className="aps-desc">Toggle whether VBOS reads chatbot replies out loud using audio speakers.</span>
             </div>
             <div className="aps-control">
               <button
@@ -271,8 +318,8 @@ export function AppSettings({
           {/* Row: Voice Wake Word Detector */}
           <div className="aps-row">
             <div className="aps-info">
-              <span className="aps-label">WAKE WORD DETECTOR ("Hey JARVIS")</span>
-              <span className="aps-desc">Background listener that opens the assistant overlay when you say "Hey JARVIS". Runs globally on any page.</span>
+              <span className="aps-label">WAKE WORD DETECTOR ("Hey VBOS")</span>
+              <span className="aps-desc">Background listener that opens the assistant overlay when you say "Hey VBOS". Runs globally on any page.</span>
             </div>
             <div className="aps-control">
               <button
@@ -289,7 +336,7 @@ export function AppSettings({
           <div className="aps-row">
             <div className="aps-info">
               <span className="aps-label">CUSTOM WAKE PHRASE</span>
-              <span className="aps-desc">Configure the trigger phrase you say out loud to activate the assistant (e.g. "Hey JARVIS", "Wake Up").</span>
+              <span className="aps-desc">Configure the trigger phrase you say out loud to activate the assistant (e.g. "Hey VBOS", "Wake Up").</span>
             </div>
             <div className="aps-control">
               <input
@@ -297,7 +344,7 @@ export function AppSettings({
                 value={wakeWordPhrase}
                 onChange={(e) => setWakeWordPhrase(e.target.value)}
                 className="aps-input"
-                placeholder="e.g. Hey JARVIS"
+                placeholder="e.g. Hey VBOS"
               />
             </div>
           </div>
@@ -353,10 +400,34 @@ export function AppSettings({
         </div>
       </div>
 
-      <div className="aps-footer">
-        <span>JARVIS // SECURE LOCAL PROXY ACTIVE</span>
-        <span>PORT: 5000 // GEMINI API CONNECTED</span>
+      {/* Save Action Block */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginTop: 20,
+        padding: '12px 20px',
+        background: '#050a05',
+        border: '1px solid #00ff41',
+        boxShadow: '0 0 8px #00ff4144',
+        borderRadius: '2px',
+      }}>
+        <div style={{ fontSize: 11, color: '#4a9e4a' }}>
+          {savedStatus === 'saving' && <span style={{ color: '#00ff41', animation: 'blink 1s infinite' }}>&gt; WRITING PREFERENCES TO SECURE STORAGE...</span>}
+          {savedStatus === 'saved' && <span style={{ color: '#00ff41' }}>✔ SYSTEM PREFERENCES SUCCESSFULLY PERSISTED.</span>}
+          {!savedStatus && <span>&gt; STANDBY: SYSTEM CONFIGURATION UNCHANGED</span>}
+        </div>
+        <button
+          type="button"
+          className={`aps-btn ${savedStatus === 'saving' ? '' : 'aps-btn-active'}`}
+          disabled={savedStatus === 'saving'}
+          onClick={handleSave}
+          style={{ fontSize: 12, padding: '8px 24px', fontWeight: 'bold' }}
+        >
+          {savedStatus === 'saving' ? 'WRITING...' : savedStatus === 'saved' ? 'SAVED ✓' : '[ SAVE SETTINGS ]'}
+        </button>
       </div>
+
     </div>
   );
 }

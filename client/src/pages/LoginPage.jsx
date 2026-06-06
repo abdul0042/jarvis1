@@ -36,11 +36,11 @@ export function LoginPage({ onLoginSuccess }) {
 
         {/* Futuristic Header Brackets */}
         <div style={styles.headerBracket}>┌─[ ACCESS RESTRICTED ]─┐</div>
-        
+
         <h1 style={styles.title}>
-          JARVIS<span style={styles.caret} />
+          VBOS<span style={styles.caret} />
         </h1>
-        
+
         <div style={styles.subtitle}>SECURE PORTAL LOGIN</div>
 
         <form onSubmit={handleSubmit} style={styles.form}>

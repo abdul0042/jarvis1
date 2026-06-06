@@ -37,11 +37,11 @@ export function useGemini() {
       try {
         const raw = localStorage.getItem('jarvis_user_salutation');
         if (raw) salutation = JSON.parse(raw);
-      } catch (e) {}
+      } catch (e) { }
 
       // 2. Call backend Gemini endpoint
       const response = await sendChatMessage(text, apiHistory, connectedApps, language, salutation, isSummary);
-      
+
       // Update our Gemini-compatible history
       const newHistory = [
         ...apiHistory,
@@ -109,7 +109,7 @@ export function useGemini() {
     try {
       const raw = localStorage.getItem('jarvis_user_salutation');
       if (raw) salutation = JSON.parse(raw);
-    } catch (e) {}
+    } catch (e) { }
     setMessages([
       {
         id: 'welcome',

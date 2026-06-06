@@ -34,14 +34,14 @@ export function useWakeWord({ enabled, phrase, onWake, modalActive }) {
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           const text = event.results[i][0].transcript.toLowerCase();
           const targetPhrase = (phrase || 'Hey JARVIS').toLowerCase();
-          
+
           if (
             text.includes(targetPhrase) ||
             (targetPhrase === 'hey jarvis' && (
               text.includes('wake up jarvis') ||
               text.includes('hi jarvis') ||
               text.includes('hello jarvis') ||
-              text.includes('hey charlie') || 
+              text.includes('hey charlie') ||
               text.includes('hey garvis') ||
               text.includes('garvis') ||
               text.includes('jarvis')

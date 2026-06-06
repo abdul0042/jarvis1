@@ -291,6 +291,11 @@ const APP_STYLE = `
     padding: 24px;
     overflow-x: hidden;
   }
+  @media (max-width: 767px) {
+    .app-main {
+      padding: 0 !important;
+    }
+  }
 
   /* ── mobile sidebar slide-out ── */
   .app-mobile-overlay {
@@ -328,6 +333,21 @@ const APP_STYLE = `
       display: block;
     }
     .app-topbar-route { font-size: 10px; }
+  }
+
+  @media (max-width: 600px) {
+    .app-topbar {
+      padding: 0 10px;
+    }
+    .app-topbar-brand {
+      display: none;
+    }
+    .app-topbar-status-text {
+      display: none;
+    }
+    .app-topbar-status {
+      padding: 4px 6px;
+    }
   }
 
   /* ── scanline on topbar ── */
@@ -373,7 +393,7 @@ function Topbar({ jarvisActive, onDismiss, onToggleMenu }) {
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <button className="app-hamburger" onClick={onToggleMenu}>☰</button>
         <div className="app-topbar-route">
-          &gt; JARVIS // <span>{label}</span>
+          <span className="app-topbar-brand">&gt; VBOS // </span><span>{label}</span>
         </div>
       </div>
 
@@ -382,30 +402,26 @@ function Topbar({ jarvisActive, onDismiss, onToggleMenu }) {
         <div
           className="ja-topbar-pill"
           onClick={onDismiss}
-          title="JARVIS is listening — click to dismiss"
+          title="VBOS is listening — click to dismiss"
         >
           <span className="ja-topbar-pill-icon">
             <span className="ja-topbar-pill-dot" />
           </span>
-          🎙 JARVIS ACTIVE &nbsp;·&nbsp; LISTENING
+          🎙 VBOS ACTIVE &nbsp;·&nbsp; LISTENING
           <span style={{ opacity: 0.5, fontSize: 9, marginLeft: 4 }}>[×]</span>
         </div>
       )}
 
-      <div className="app-topbar-status">
-        <span className="app-status-dot" />
-        PORT: 5000 ACTIVE
-      </div>
     </div>
   );
 }
 
 /* ── nav items ── */
 const NAV_ITEMS = [
-  { to: '/',             prefix: '[01]', label: 'DASHBOARD'     },
-  { to: '/chat',         prefix: '[02]', label: 'CHAT TERMINAL'  },
-  { to: '/integrations', prefix: '[03]', label: 'INTEGRATIONS'   },
-  { to: '/settings',     prefix: '[04]', label: 'SETTINGS'       },
+  { to: '/', prefix: '[01]', label: 'DASHBOARD' },
+  { to: '/chat', prefix: '[02]', label: 'CHAT TERMINAL' },
+  { to: '/integrations', prefix: '[03]', label: 'INTEGRATIONS' },
+  { to: '/settings', prefix: '[04]', label: 'SETTINGS' },
 ];
 
 function AppContent() {
@@ -452,7 +468,7 @@ function AppContent() {
         try {
           const cached = JSON.parse(localStorage.getItem('jarvis_history') || '[]');
           setHistoryState(cached);
-        } catch {}
+        } catch { }
       });
   }, []);
 
@@ -476,9 +492,9 @@ function AppContent() {
             id: a._id || a.id,
             authHeader: a.credentials?.authHeader || a.authHeader || '',
             authPrefix: a.credentials?.authPrefix || a.authPrefix || '',
-            apiKey:     a.credentials?.authToken  || a.apiKey     || '',
-            isGmail:    a.name.toLowerCase() === 'gmail',
-            isSheets:   a.name.toLowerCase() === 'google sheets',
+            apiKey: a.credentials?.authToken || a.apiKey || '',
+            isGmail: a.name.toLowerCase() === 'gmail',
+            isSheets: a.name.toLowerCase() === 'google sheets',
           }));
           setAppsState(normalized);
         }
@@ -488,7 +504,7 @@ function AppContent() {
         try {
           const cached = JSON.parse(localStorage.getItem('jarvis_apps') || '[]');
           setAppsState(cached);
-        } catch {}
+        } catch { }
       })
       .finally(() => setAppsLoading(false));
   }, []);
@@ -512,7 +528,7 @@ function AppContent() {
   const [selectedVoiceName, setSelectedVoiceName] = useLocalStorage('jarvis_selected_voice_name', '');
   const [userSalutation, setUserSalutation] = useLocalStorage('jarvis_user_salutation', 'Sir');
   const [wakeWordActive, setWakeWordActive] = useLocalStorage('jarvis_wake_word_active', true);
-  const [wakeWordPhrase, setWakeWordPhrase] = useLocalStorage('jarvis_wake_word_phrase', 'Hey JARVIS');
+  const [wakeWordPhrase, setWakeWordPhrase] = useLocalStorage('jarvis_wake_word_phrase', 'Hey VBOS');
   const [isAuthenticated, setIsAuthenticated] = useLocalStorage('jarvis_authenticated', false);
 
   const [showVoiceModal, setShowVoiceModal] = useState(false);
@@ -655,9 +671,9 @@ function AppContent() {
   return (
     <div className="app-shell">
       {/* Mobile overlay */}
-      <div 
-        className={`app-mobile-overlay ${mobileMenuOpen ? 'mobile-open' : ''}`} 
-        onClick={() => setMobileMenuOpen(false)} 
+      <div
+        className={`app-mobile-overlay ${mobileMenuOpen ? 'mobile-open' : ''}`}
+        onClick={() => setMobileMenuOpen(false)}
       />
 
       {/* ── Sidebar ── */}
@@ -666,7 +682,7 @@ function AppContent() {
         <div className="app-logo">
           <span className="app-logo-bracket">┌─[ SYSTEM ONLINE ]─┐</span>
           <span className="app-logo-name">
-            JARVIS<span className="app-caret" />
+            VBOS<span className="app-caret" />
           </span>
           <span className="app-logo-sub">APP ORCHESTRATOR v1.0</span>
         </div>
@@ -713,13 +729,13 @@ function AppContent() {
               boxShadow: '0 0 4px rgba(0, 255, 65, 0.1)',
               transition: 'all 0.15s'
             }}
-            onMouseEnter={(e) => { 
-              e.target.style.background = 'rgba(0, 255, 65, 0.08)'; 
-              e.target.style.boxShadow = '0 0 8px rgba(0, 255, 65, 0.3)'; 
+            onMouseEnter={(e) => {
+              e.target.style.background = 'rgba(0, 255, 65, 0.08)';
+              e.target.style.boxShadow = '0 0 8px rgba(0, 255, 65, 0.3)';
             }}
-            onMouseLeave={(e) => { 
-              e.target.style.background = 'transparent'; 
-              e.target.style.boxShadow = '0 0 4px rgba(0, 255, 65, 0.1)'; 
+            onMouseLeave={(e) => {
+              e.target.style.background = 'transparent';
+              e.target.style.boxShadow = '0 0 4px rgba(0, 255, 65, 0.1)';
             }}
           >
             🎙 LAUNCH ASSISTANT
@@ -746,13 +762,13 @@ function AppContent() {
               boxShadow: '0 0 4px rgba(255, 49, 49, 0.1)',
               transition: 'all 0.15s'
             }}
-            onMouseEnter={(e) => { 
-              e.target.style.background = 'rgba(255, 49, 49, 0.08)'; 
-              e.target.style.boxShadow = '0 0 8px rgba(255, 49, 49, 0.3)'; 
+            onMouseEnter={(e) => {
+              e.target.style.background = 'rgba(255, 49, 49, 0.08)';
+              e.target.style.boxShadow = '0 0 8px rgba(255, 49, 49, 0.3)';
             }}
-            onMouseLeave={(e) => { 
-              e.target.style.background = 'transparent'; 
-              e.target.style.boxShadow = '0 0 4px rgba(255, 49, 49, 0.1)'; 
+            onMouseLeave={(e) => {
+              e.target.style.background = 'transparent';
+              e.target.style.boxShadow = '0 0 4px rgba(255, 49, 49, 0.1)';
             }}
           >
             🔒 SECURE LOGOUT
@@ -772,9 +788,9 @@ function AppContent() {
 
       {/* ── Main content ── */}
       <div className="app-content">
-        <Topbar 
-          jarvisActive={jarvisAwake} 
-          onDismiss={handleDismissWake} 
+        <Topbar
+          jarvisActive={jarvisAwake}
+          onDismiss={handleDismissWake}
           onToggleMenu={() => setMobileMenuOpen(prev => !prev)}
         />
         <main className="app-main">

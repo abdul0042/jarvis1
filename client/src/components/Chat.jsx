@@ -81,11 +81,131 @@ const STYLE = `
 }
 .ch-clear-btn:hover { color: #00ff41; border-color: #00ff41; background: #00ff4110; }
 
+.ch-header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.ch-options-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 14px;
+  background: #020602;
+  border-bottom: 1px solid #00ff4133;
+  animation: ch-fadein 0.2s ease both;
+  z-index: 5;
+}
+
+.ch-settings-toggle {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  z-index: 20;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 255, 65, 0.35);
+  background: rgba(2, 6, 2, 0.85);
+  color: #4a9e4a;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  padding: 0;
+}
+.ch-settings-toggle:hover {
+  color: #00ff41;
+  border-color: #00ff41;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+  background: rgba(0, 255, 65, 0.08);
+}
+.ch-settings-toggle:hover .gear-icon {
+  transform: rotate(45deg);
+}
+.ch-settings-toggle.active {
+  color: #000000;
+  background: #00ff41;
+  border-color: #00ff41;
+  box-shadow: 0 0 14px rgba(0, 255, 65, 0.6);
+}
+.ch-settings-toggle.active .gear-icon {
+  transform: rotate(180deg);
+}
+.ch-settings-toggle .gear-icon {
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+@media (max-width: 600px) {
+  .ch-options-bar {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+  .ch-options-bar .ch-clear-btn {
+    flex: 1 1 auto;
+    font-size: 9px;
+    padding: 4px 6px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 850px) {
+  .ch-header {
+    height: auto;
+    min-height: 38px;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  .ch-header-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: space-between;
+  }
+  .ch-clear-btn {
+    flex: 1 1 auto;
+    font-size: 9px;
+    padding: 4px 6px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .ch-row-jarvis, .ch-row-user {
+    max-width: 92%;
+  }
+}
+
+@media (max-width: 767px) {
+  .ch-panel {
+    border: none !important;
+    box-shadow: none !important;
+    background: #000000 !important;
+    height: calc(100vh - 46px) !important;
+    border-radius: 0 !important;
+  }
+  .ch-tray {
+    padding: 10px 14px 16px !important;
+    background: transparent !important;
+    border: none !important;
+  }
+  .ch-input-box {
+    border: 1px solid rgba(0, 255, 65, 0.45) !important;
+    border-radius: 30px !important;
+    padding: 4px 14px !important;
+    background: #000000 !important;
+  }
+}
+
 /* ── history panel ── */
 @keyframes ch-slidein { from { transform: translateX(100%); opacity: 0; } to { transform: none; opacity: 1; } }
 .ch-hist-panel {
   position: absolute;
-  top: 38px;
+  top: 0;
   right: 0;
   bottom: 0;
   width: 340px;
@@ -143,7 +263,7 @@ const STYLE = `
 .ch-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 16px 16px 10px;
+  padding: 45px 16px 10px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -380,33 +500,38 @@ const STYLE = `
   letter-spacing: 0.1em;
 }
 
-/* ── input tray ── */
+/* ── input tray: Dynamic Island style ── */
 .ch-tray {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 14px;
-  border-top: 1px solid #00ff4155;
-  background: #020702;
+  padding: 14px 20px 24px;
+  background: transparent;
+  border: none;
   flex-shrink: 0;
 }
 .ch-input-box {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 0;
-  border: 1px solid #00ff4155;
-  background: #010401;
-  transition: border-color .15s, box-shadow .15s;
+  gap: 8px;
+  border: 1px solid rgba(0, 255, 65, 0.45);
+  background: #000000;
+  border-radius: 30px;
+  padding: 4px 18px;
+  box-shadow: 0 4px 24px rgba(0, 255, 65, 0.15), 0 0 10px rgba(0, 255, 65, 0.05);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
 }
 .ch-input-box:focus-within {
   border-color: #00ff41;
-  box-shadow: 0 0 10px #00ff4133;
+  box-shadow: 0 6px 28px rgba(0, 255, 65, 0.3), 0 0 15px rgba(0, 255, 65, 0.15);
+  transform: translateY(-2px);
 }
 .ch-prompt {
   color: #4a9e4a;
   font-size: 13px;
-  padding: 0 0 0 10px;
+  padding-left: 6px;
   user-select: none;
   flex-shrink: 0;
   line-height: 1;
@@ -420,28 +545,44 @@ const STYLE = `
   font-size: 12px;
   color: #00ff41;
   caret-color: #00ff41;
-  padding: 10px 10px;
+  padding: 10px 4px;
   letter-spacing: 0.04em;
 }
 .ch-input::placeholder { color: #2a5a2a; }
 .ch-input:disabled { opacity: .45; }
 
-.ch-send {
-  background: #000;
-  border: none;
-  border-left: 1px solid #00ff4155;
-  color: #00ff41;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
-  padding: 10px 14px;
-  cursor: pointer;
-  letter-spacing: 0.08em;
-  transition: background .15s, color .15s;
-  flex-shrink: 0;
-  height: 100%;
+@keyframes ch-send-in {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
 }
-.ch-send:hover:not(:disabled) { background: #00ff4115; }
-.ch-send:disabled { opacity: .3; cursor: default; }
+.ch-send {
+  background: #00ff41;
+  border: none;
+  color: #000000;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+  animation: ch-send-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  padding: 0;
+  margin-left: 4px;
+}
+.ch-send:hover:not(:disabled) {
+  background: #00ff41;
+  transform: scale(1.08);
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.7);
+}
+.ch-send:active:not(:disabled) {
+  transform: scale(0.95);
+}
 
 /* ── Jarvis Assistant Card Modal ── */
 .ja-modal-overlay {
@@ -684,6 +825,7 @@ export function Chat({
   const [inputText, setInputText] = useState(initialInputText);
   const [showHistory, setShowHistory] = useState(showHistoryInitially);
   const [expandedRaw, setExpandedRaw] = useState(new Set());
+  const [showOptions, setShowOptions] = useState(false);
 
   const toggleRaw = (id) => {
     setExpandedRaw(prev => {
@@ -866,16 +1008,47 @@ export function Chat({
 
 
 
-      {/* ── Header ── */}
-      <div className="ch-header">
-        <div className="ch-header-left">
-          <span>┌─[</span>
-          <span>INTERACTIVE TERMINAL</span>
-          <span>]─</span>
-          <span className="ch-header-line" />
-          <span className="ch-dot" />
-        </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+      {/* ── Settings toggle button ── */}
+      <button
+        type="button"
+        className={`ch-settings-toggle ${showOptions ? 'active' : ''}`}
+        onClick={() => setShowOptions(!showOptions)}
+        title={showOptions ? 'Hide options' : 'Show options'}
+      >
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="gear-icon"
+          style={{ display: 'block' }}
+        >
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+      </button>
+
+      {/* ── Options Bar ── */}
+      {showOptions && (
+        <div className="ch-options-bar" style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          background: 'rgba(2, 6, 2, 0.95)',
+          backdropFilter: 'blur(4px)',
+          borderBottom: '1px solid #00ff4155',
+          padding: '10px 14px',
+          paddingRight: '60px', // Space for settings toggle button
+          zIndex: 15,
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 8
+        }}>
           <button
             type="button"
             className="ch-clear-btn"
@@ -925,7 +1098,7 @@ export function Chat({
             [ 📜 HISTORY{history.length > 0 ? ` (${history.length})` : ''} ]
           </button>
         </div>
-      </div>
+      )}
 
       {/* ── History side panel ── */}
       {showHistory && (
@@ -964,7 +1137,7 @@ export function Chat({
         {/* Empty state */}
         {messages.length === 0 && !isLoading && (
           <div className="ch-empty">
-            <div className="ch-empty-title">JARVIS TERMINAL READY</div>
+            <div className="ch-empty-title">VBOS TERMINAL READY</div>
             <div>&gt; Awaiting command input...</div>
             <div style={{ fontSize: 10, marginTop: 4, color: '#1d4d1d' }}>
               Type below or use voice input to issue a command
@@ -972,13 +1145,48 @@ export function Chat({
           </div>
         )}
 
-        {messages.map((msg) => {
+        {messages
+          .filter((msg) => {
+            if (msg.isGreeting) {
+              return !messages.some(m => m.sender === 'user');
+            }
+            return true;
+          })
+          .map((msg) => {
           /* system / orchestrator message */
           if (msg.sender === 'system') {
             const isDone = msg.text?.startsWith('✓');
             return (
               <div key={msg.id} className="ch-sys-row">
                 <div className={isDone ? 'ch-sys-pill-done' : 'ch-sys-pill'}>&gt; {msg.text}</div>
+              </div>
+            );
+          }
+
+          if (msg.isGreeting) {
+            return (
+              <div
+                key={msg.id}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  padding: '40px 20px',
+                  color: '#4a9e4a',
+                  fontStyle: 'italic',
+                  fontSize: '13px',
+                  letterSpacing: '0.08em',
+                  lineHeight: '1.6',
+                  animation: 'ch-fadein 0.5s ease both',
+                  textShadow: '0 0 8px rgba(0, 255, 65, 0.15)',
+                  maxWidth: '450px',
+                  alignSelf: 'center',
+                  margin: '40px auto'
+                }}
+              >
+                {msg.text}
               </div>
             );
           }
@@ -990,7 +1198,7 @@ export function Chat({
             <div key={msg.id} className={rowClass}>
               {/* prefix */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div className="ch-prefix">{isUser ? '[USER]' : '[JARVIS]'}</div>
+                <div className="ch-prefix">{isUser ? '[USER]' : '[VBOS]'}</div>
                 {!isUser && (
                   <button
                     onClick={() => speakText(msg.text)}
@@ -1197,7 +1405,7 @@ export function Chat({
         {/* Loading row */}
         {isLoading && (
           <div className="ch-row-jarvis">
-            <div className="ch-prefix">[JARVIS]</div>
+            <div className="ch-prefix">[VBOS]</div>
             <div className="ch-bubble">
               <div className="ch-signal">
                 <div className="ch-signal-bars">
@@ -1215,7 +1423,13 @@ export function Chat({
       {/* ── Input Tray ── */}
       <form className="ch-tray" onSubmit={handleSubmit}>
         <div className="ch-input-box">
-          <span className="ch-prompt">&gt;_</span>
+          <VoiceInput
+            isListening={false}
+            onStart={handleStartListening}
+            onStop={() => { }}
+            error={null}
+            browserSupported={true}
+          />
           <input
             ref={inputRef}
             className="ch-input"
@@ -1226,23 +1440,31 @@ export function Chat({
             placeholder={
               connectedApps.length === 0
                 ? 'Connect an app in Integrations first...'
-                : 'Issue a command to JARVIS...'
+                : 'Issue a command to VBOS...'
             }
           />
-          <VoiceInput
-            isListening={false}
-            onStart={handleStartListening}
-            onStop={() => { }}
-            error={null}
-            browserSupported={true}
-          />
-          <button
-            type="submit"
-            className="ch-send"
-            disabled={!inputText.trim() || isLoading}
-          >
-            SEND ▶
-          </button>
+          {inputText.trim() && (
+            <button
+              type="submit"
+              className="ch-send"
+              disabled={isLoading}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ display: 'block' }}
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </button>
+          )}
         </div>
       </form>
 

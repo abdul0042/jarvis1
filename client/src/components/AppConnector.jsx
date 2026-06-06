@@ -260,26 +260,26 @@ function useAcStyle() {
 export function AppConnector({ onSave, onCancel, editApp = null }) {
   useAcStyle();
 
-  const [name,        setName]        = useState(editApp?.name        ?? '');
-  const [baseUrl,     setBaseUrl]     = useState(editApp?.baseUrl     ?? '');
-  const [apiKey,      setApiKey]      = useState(editApp?.apiKey      ?? '');
-  const [authHeader,  setAuthHeader]  = useState(editApp?.authHeader  ?? 'Authorization');
-  const [authPrefix,  setAuthPrefix]  = useState(editApp?.authPrefix  ?? 'Bearer');
+  const [name, setName] = useState(editApp?.name ?? '');
+  const [baseUrl, setBaseUrl] = useState(editApp?.baseUrl ?? '');
+  const [apiKey, setApiKey] = useState(editApp?.apiKey ?? '');
+  const [authHeader, setAuthHeader] = useState(editApp?.authHeader ?? 'Authorization');
+  const [authPrefix, setAuthPrefix] = useState(editApp?.authPrefix ?? 'Bearer');
   const [description, setDescription] = useState(editApp?.description ?? '');
 
-  const [testing,    setTesting]    = useState(false);
+  const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState(null);
-  const [errorMsg,   setErrorMsg]   = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   // Gmail OAuth state — tokens stored in MongoDB (mirrored to localStorage for fast reads)
-  const GMAIL_TOKEN_KEY  = 'jarvis_gmail_tokens';
+  const GMAIL_TOKEN_KEY = 'jarvis_gmail_tokens';
   const SHEETS_TOKEN_KEY = 'jarvis_sheets_tokens';
 
-  const [gmailConnected,  setGmailConnected]  = useState(false);
-  const [gmailChecking,   setGmailChecking]   = useState(false);
+  const [gmailConnected, setGmailConnected] = useState(false);
+  const [gmailChecking, setGmailChecking] = useState(false);
   const [sheetsConnected, setSheetsConnected] = useState(false);
-  const [sheetsChecking,  setSheetsChecking]  = useState(false);
-  const gmailJustConnected  = useRef(false);
+  const [sheetsChecking, setSheetsChecking] = useState(false);
+  const gmailJustConnected = useRef(false);
   const sheetsJustConnected = useRef(false);
 
   // Load token status from MongoDB on mount
@@ -297,7 +297,7 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
         try {
           const t = JSON.parse(localStorage.getItem(GMAIL_TOKEN_KEY) || '{}');
           if (t.access_token) setGmailConnected(true);
-        } catch {}
+        } catch { }
       });
 
     fetch((import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/tokens/sheets')
@@ -312,7 +312,7 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
         try {
           const t = JSON.parse(localStorage.getItem(SHEETS_TOKEN_KEY) || '{}');
           if (t.access_token) setSheetsConnected(true);
-        } catch {}
+        } catch { }
       });
   }, []);
 
@@ -457,16 +457,16 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
       authPrefix: authPrefix.trim(), description: description.trim(),
       // Save regardless of test result — test is optional
       status: testResult === 'success' ? 'connected'
-            : testResult === 'error'   ? 'error'
-            : (editApp ? editApp.status : 'untested'),
+        : testResult === 'error' ? 'error'
+          : (editApp ? editApp.status : 'untested'),
     });
   };
 
   const fillMock = (type) => {
     const presets = {
-      todo:    { name: 'JARVIS Todo List',       baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/todos',   apiKey: 'demo-todo-key-123',    description: 'Manages todo list tasks. Use tasks endpoint to GET, POST, and DELETE items.' },
+      todo: { name: 'JARVIS Todo List', baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/todos', apiKey: 'demo-todo-key-123', description: 'Manages todo list tasks. Use tasks endpoint to GET, POST, and DELETE items.' },
       finance: { name: 'JARVIS Finance Tracker', baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/finance', apiKey: 'demo-finance-key-456', description: 'Records financial transactions: income and expenses. Supports adding items.' },
-      weather: { name: 'JARVIS Weather',         baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/weather', apiKey: 'demo-weather-key-789', description: 'Provides real-time weather information and forecasting for cities.' },
+      weather: { name: 'JARVIS Weather', baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/weather', apiKey: 'demo-weather-key-789', description: 'Provides real-time weather information and forecasting for cities.' },
     };
     const p = presets[type];
     setName(p.name); setBaseUrl(p.baseUrl); setApiKey(p.apiKey);
@@ -508,8 +508,8 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
                   {gmailChecking
                     ? 'Checking connection...'
                     : gmailConnected
-                    ? 'OAuth2 connected — read, send & search emails via JARVIS'
-                    : 'Connect via Google OAuth2 — no API key required'}
+                      ? 'OAuth2 connected — read, send & search emails via JARVIS'
+                      : 'Connect via Google OAuth2 — no API key required'}
                 </div>
                 {gmailConnected && (
                   <div className="ac-gmail-connected" style={{ marginTop: 4 }}>
@@ -523,8 +523,8 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
               {gmailConnected
                 ? <button type="button" className="ac-btn-gmail-disconnect" onClick={handleGmailDisconnect}>DISCONNECT</button>
                 : <button type="button" className="ac-btn-gmail" onClick={handleGmailConnect}>
-                    <span>G</span> CONNECT GMAIL →
-                  </button>
+                  <span>G</span> CONNECT GMAIL →
+                </button>
               }
             </div>
           </div>
@@ -537,8 +537,8 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
                   {sheetsChecking
                     ? 'Checking connection...'
                     : sheetsConnected
-                    ? 'OAuth2 connected — read, update & append spreadsheets via JARVIS'
-                    : 'Connect via Google Sheets OAuth2 — no API key required'}
+                      ? 'OAuth2 connected — read, update & append spreadsheets via JARVIS'
+                      : 'Connect via Google Sheets OAuth2 — no API key required'}
                 </div>
                 {sheetsConnected && (
                   <div className="ac-gmail-connected" style={{ marginTop: 4 }}>
@@ -552,8 +552,8 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
               {sheetsConnected
                 ? <button type="button" className="ac-btn-gmail-disconnect" onClick={handleSheetsDisconnect}>DISCONNECT</button>
                 : <button type="button" className="ac-btn-gmail" onClick={handleSheetsConnect}>
-                    <span>G</span> CONNECT SHEETS →
-                  </button>
+                  <span>G</span> CONNECT SHEETS →
+                </button>
               }
             </div>
           </div>

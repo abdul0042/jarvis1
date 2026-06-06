@@ -223,6 +223,13 @@ const SETTINGS_STYLE = `
   .st-row-btn-del { border-color: #ff313133; color: #ff3131; }
   .st-row-btn-del:hover { border-color: #ff3131; background: #ff313112; box-shadow: 0 0 6px #ff313144; }
 
+  .st-btn-text {
+    display: inline;
+  }
+  .st-btn-icon {
+    display: none;
+  }
+
   /* gmail special card */
   .st-gmail-card {
     border: 1px solid #00ff4155;
@@ -283,6 +290,98 @@ const SETTINGS_STYLE = `
     display: flex;
     justify-content: space-between;
   }
+
+  @media (max-width: 767px) {
+    .st-root {
+      padding: 10px;
+    }
+    .st-gmail-card {
+      margin: 12px 0 !important;
+    }
+    .st-panel-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      padding: 12px 14px;
+    }
+    .st-panel-header-left {
+      justify-content: center;
+    }
+    .st-add-btn {
+      width: 100%;
+      text-align: center;
+      padding: 6px 0;
+    }
+    .st-table, .st-table thead, .st-table tbody, .st-table th, .st-table td, .st-table tr {
+      display: block;
+    }
+    .st-table thead {
+      display: none;
+    }
+    .st-table tbody tr {
+      border: 1px solid rgba(0, 255, 65, 0.25);
+      background: #020702;
+      margin: 12px 0;
+      padding: 10px 14px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .st-table tbody tr:hover {
+      background: #00ff4108;
+      border-color: #00ff41;
+    }
+    .st-table td {
+      padding: 0 !important;
+      border: none;
+      text-align: left !important;
+      width: auto !important;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+    }
+    .st-table td:nth-child(2) {
+      display: none !important;
+    }
+    .st-table td:nth-child(4) {
+      display: none !important;
+    }
+    .st-app-desc {
+      display: none !important;
+    }
+    .st-row-btns {
+      display: inline-flex;
+      justify-content: flex-end;
+      gap: 8px;
+      width: auto;
+      margin-top: 0;
+    }
+    .st-row-btn {
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border-radius: 50%;
+      border-color: rgba(0, 255, 65, 0.3);
+    }
+    .st-row-btn-del {
+      border-color: rgba(255, 49, 49, 0.3);
+    }
+    .st-btn-text {
+      display: none;
+    }
+    .st-btn-icon {
+      display: inline-block;
+    }
+    .st-btn-icon svg {
+      display: block;
+    }
+  }
 `;
 
 function useSettingsStyle() {
@@ -300,14 +399,14 @@ function useSettingsStyle() {
 
 const statusLabel = (s) => {
   if (s === 'connected') return <span className="st-status-ok">● ONLINE</span>;
-  if (s === 'error')     return <span className="st-status-err">✖ ERROR</span>;
+  if (s === 'error') return <span className="st-status-err">✖ ERROR</span>;
   return <span className="st-status-unk">◌ UNTESTED</span>;
 };
 
 export function Settings({ apps, setApps }) {
   useSettingsStyle();
 
-  const [isAdding, setIsAdding]     = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   const [editingApp, setEditingApp] = useState(null);
 
   // Check if Gmail is connected
@@ -324,16 +423,16 @@ export function Settings({ apps, setApps }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name:        appData.name,
-          baseUrl:     appData.baseUrl,
+          name: appData.name,
+          baseUrl: appData.baseUrl,
           description: appData.description || '',
-          authType:    appData.authHeader ? 'apiKey' : 'none',
+          authType: appData.authHeader ? 'apiKey' : 'none',
           credentials: {
             authHeader: appData.authHeader,
             authPrefix: appData.authPrefix,
-            authToken:  appData.apiKey || appData.authToken || '',
+            authToken: appData.apiKey || appData.authToken || '',
           },
-          status:      appData.status || 'untested',
+          status: appData.status || 'untested',
         }),
       });
       const data = await res.json();
@@ -375,14 +474,7 @@ export function Settings({ apps, setApps }) {
   if (isAdding || editingApp) {
     return (
       <div className="st-root">
-        <div className="st-title-bar">
-          <span style={{ color: '#4a9e4a' }}>┌──[</span>
-          <span style={{ color: '#00ff41' }}>JARVIS // INTEGRATIONS</span>
-          <span style={{ color: '#4a9e4a' }}>]</span>
-          <span style={{ flex: 1, borderTop: '1px solid #00ff4130' }} />
-        </div>
-
-        <button className="st-back-btn" onClick={() => { setIsAdding(false); setEditingApp(null); }}>
+        <button className="st-back-btn" onClick={() => { setIsAdding(false); setEditingApp(null); }} style={{ marginTop: 10 }}>
           ← BACK TO APP LIST
         </button>
 
@@ -395,24 +487,14 @@ export function Settings({ apps, setApps }) {
     );
   }
 
-  /* ── Main list view ── */
   return (
     <div className="st-root">
-      {/* Title bar */}
-      <div className="st-title-bar">
-        <span style={{ color: '#4a9e4a' }}>┌──[</span>
-        <span style={{ color: '#00ff41' }}>JARVIS // INTEGRATIONS</span>
-        <span style={{ color: '#4a9e4a' }}>]</span>
-        <span style={{ flex: 1, borderTop: '1px solid #00ff4130' }} />
-        <span style={{ color: '#4a9e4a', fontSize: 11 }}>{apps.length} APP{apps.length !== 1 ? 'S' : ''} CONNECTED</span>
-      </div>
-
       {/* Panel */}
-      <div className="st-panel">
+      <div className="st-panel" style={{ marginTop: 10 }}>
         <div className="st-panel-header">
           <div className="st-panel-header-left">
             <span>┌─[</span>
-            <span style={{ letterSpacing: '0.15em' }}>CONNECTED APPS</span>
+            <span style={{ letterSpacing: '0.15em' }}>CONNECTED APPS ({apps.length})</span>
             <span>]─</span>
             <span style={{ flex: 1, borderTop: '1px solid #00ff4155', margin: '0 8px', minWidth: 20 }} />
             <span className="st-dot" />
@@ -484,75 +566,84 @@ export function Settings({ apps, setApps }) {
           </div>
         ) : (
           apps.filter(app => !app.isGmail && !app.isSheets).length > 0 && (
-          <div style={{ overflowX: 'auto' }}>
-            <table className="st-table">
-              <colgroup>
-                <col className="col-app" />
-                <col className="col-url" />
-                <col className="col-status" />
-                <col className="col-auth" />
-                <col className="col-actions" />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>APPLICATION</th>
-                  <th>BASE URL</th>
-                  <th className="st-col-status">STATUS</th>
-                  <th>AUTH</th>
-                  <th className="st-col-actions">ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {apps.filter(app => !app.isGmail && !app.isSheets).map((app) => (
-                  <tr key={app.id}>
-                    <td>
-                      <div className="st-app-name" title={app.name}>&gt; {app.name}</div>
-                      <div className="st-app-desc" title={app.description}>
-                        {app.description
-                          ? app.description.length > 60
-                            ? app.description.slice(0, 60) + '…'
-                            : app.description
-                          : 'No description'}
-                      </div>
-                    </td>
-                    <td>
-                      <span className="st-url" title={app.baseUrl}>{app.baseUrl}</span>
-                    </td>
-                    <td>{statusLabel(app.status)}</td>
-                    <td>
-                      {app.isGmail || app.isSheets
-                        ? <span className="st-auth-tag-oauth">● OAuth2</span>
-                        : app.apiKey
-                          ? <span className="st-auth-tag" title={`${app.authHeader}: ${app.authPrefix} ••••`}>
+            <div style={{ overflowX: 'auto' }}>
+              <table className="st-table">
+                <colgroup>
+                  <col className="col-app" />
+                  <col className="col-url" />
+                  <col className="col-status" />
+                  <col className="col-auth" />
+                  <col className="col-actions" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>APPLICATION</th>
+                    <th>BASE URL</th>
+                    <th className="st-col-status">STATUS</th>
+                    <th>AUTH</th>
+                    <th className="st-col-actions">ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {apps.filter(app => !app.isGmail && !app.isSheets).map((app) => (
+                    <tr key={app.id}>
+                      <td>
+                        <div className="st-app-name" title={app.name}>&gt; {app.name}</div>
+                        <div className="st-app-desc" title={app.description}>
+                          {app.description
+                            ? app.description.length > 60
+                              ? app.description.slice(0, 60) + '…'
+                              : app.description
+                            : 'No description'}
+                        </div>
+                      </td>
+                      <td>
+                        <span className="st-url" title={app.baseUrl}>{app.baseUrl}</span>
+                      </td>
+                      <td>{statusLabel(app.status)}</td>
+                      <td>
+                        {app.isGmail || app.isSheets
+                          ? <span className="st-auth-tag-oauth">● OAuth2</span>
+                          : app.apiKey
+                            ? <span className="st-auth-tag" title={`${app.authHeader}: ${app.authPrefix} ••••`}>
                               {app.authHeader || 'Authorization'} ••••
                             </span>
-                          : <span className="st-auth-tag">No Auth</span>
-                      }
-                    </td>
-                    <td className="st-col-actions">
-                      <div className="st-row-btns">
-                        <button className="st-row-btn" onClick={() => setEditingApp(app)} title="Edit">
-                          [ EDIT ]
-                        </button>
-                        <button className="st-row-btn st-row-btn-del" onClick={() => handleDeleteApp(app.id)} title="Delete">
-                          [ DEL ]
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                            : <span className="st-auth-tag">No Auth</span>
+                        }
+                      </td>
+                      <td className="st-col-actions">
+                        <div className="st-row-btns">
+                          <button className="st-row-btn" onClick={() => setEditingApp(app)} title="Edit">
+                            <span className="st-btn-text">[ EDIT ]</span>
+                            <span className="st-btn-icon">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                              </svg>
+                            </span>
+                          </button>
+                          <button className="st-row-btn st-row-btn-del" onClick={() => handleDeleteApp(app.id)} title="Delete">
+                            <span className="st-btn-text">[ DEL ]</span>
+                            <span className="st-btn-icon">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="3 6 5 6 21 6" />
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                <line x1="10" y1="11" x2="10" y2="17" />
+                                <line x1="14" y1="11" x2="14" y2="17" />
+                              </svg>
+                            </span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )
         )}
       </div>
 
-      {/* Footer */}
-      <div className="st-footer">
-        <span>JARVIS // SECURE LOCAL PROXY ACTIVE</span>
-        <span>PORT: 5000 // GEMINI API CONNECTED</span>
-      </div>
     </div>
   );
 }
