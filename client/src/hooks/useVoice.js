@@ -36,6 +36,8 @@ export function useVoice() {
       console.error('Speech recognition error:', event.error);
       if (event.error === 'not-allowed') {
         setError('Microphone access denied. Please check your browser permissions.');
+        // Fire the permission modal so user can grant mic access
+        window.dispatchEvent(new CustomEvent('vbos-request-permissions'));
       } else if (event.error === 'no-speech') {
         setError('No speech was detected. Please try again.');
       } else {
@@ -51,11 +53,27 @@ export function useVoice() {
     recognitionRef.current = rec;
   }, []);
 
-  const startListening = (lang = 'en-US') => {
+  const startListening = async (lang = 'en-US') => {
     if (!browserSupported) {
       setError('Web Speech API is not supported in this browser.');
       return;
     }
+
+    // Check mic permission — if not granted, show the permission modal
+    if (navigator.permissions) {
+      try {
+        const status = await navigator.permissions.query({ name: 'microphone' });
+        if (status.state === 'denied') {
+          window.dispatchEvent(new CustomEvent('vbos-request-permissions'));
+          return;
+        }
+        if (status.state === 'prompt') {
+          window.dispatchEvent(new CustomEvent('vbos-request-permissions'));
+          return;
+        }
+      } catch { /* permissions API not supported — try anyway */ }
+    }
+
     if (recognitionRef.current && !isListening) {
       setTranscript('');
       setError(null);

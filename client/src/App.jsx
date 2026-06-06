@@ -533,6 +533,70 @@ function AppContent() {
 
   const [showVoiceModal, setShowVoiceModal] = useState(false);
   const [installBannerDismissed, setInstallBannerDismissed] = useState(false);
+
+  // ── First-launch permission prompt ──
+  const [showPermissionModal, setShowPermissionModal] = useState(false);
+  const [permissionStep, setPermissionStep] = useState('idle'); // idle | requesting | done
+  const [permResults, setPermResults] = useState({ mic: null, notifications: null });
+
+  useEffect(() => {
+    const alreadyAsked = localStorage.getItem('vbos_permissions_asked');
+    if (!alreadyAsked) {
+      // Small delay so the app renders first
+      const t = setTimeout(() => setShowPermissionModal(true), 800);
+      return () => clearTimeout(t);
+    }
+  }, []);
+
+  // Re-open permission modal when any mic/speaker button fires the event
+  useEffect(() => {
+    const handler = () => {
+      setPermissionStep('idle');
+      setPermResults({ mic: null, notifications: null });
+      setShowPermissionModal(true);
+    };
+    window.addEventListener('vbos-request-permissions', handler);
+    return () => window.removeEventListener('vbos-request-permissions', handler);
+  }, []);
+
+  const handleRequestPermissions = async () => {
+    setPermissionStep('requesting');
+    const results = { mic: null, notifications: null };
+
+    // 1. Microphone
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(t => t.stop());
+      results.mic = 'granted';
+    } catch {
+      results.mic = 'denied';
+    }
+
+    // 2. Notifications
+    try {
+      if ('Notification' in window) {
+        const notifPerm = await Notification.requestPermission();
+        results.notifications = notifPerm;
+      } else {
+        results.notifications = 'unsupported';
+      }
+    } catch {
+      results.notifications = 'denied';
+    }
+
+    setPermResults(results);
+    setPermissionStep('done');
+    localStorage.setItem('vbos_permissions_asked', '1');
+  };
+
+  const handleDismissPermissions = () => {
+    localStorage.setItem('vbos_permissions_asked', '1');
+    setShowPermissionModal(false);
+  };
+
+  const handleDonePermissions = () => {
+    setShowPermissionModal(false);
+  };
   const [jarvisAwake, setJarvisAwake] = useState(false); // topbar badge only
   const [voicesList, setVoicesList] = useState([]);
 
@@ -874,6 +938,140 @@ function AppContent() {
           </Routes>
         </main>
       </div>
+
+      {/* ── First-Launch Permission Modal ── */}
+      {showPermissionModal && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 10000,
+          background: 'rgba(0,0,0,0.92)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 20,
+          fontFamily: "'Share Tech Mono', monospace",
+        }}>
+          <div style={{
+            background: 'linear-gradient(160deg, #050a05 0%, #0a1a0a 100%)',
+            border: '1px solid #00ff41',
+            boxShadow: '0 0 40px rgba(0,255,65,0.25), inset 0 0 60px rgba(0,255,65,0.03)',
+            borderRadius: 4,
+            padding: '28px 24px',
+            maxWidth: 380,
+            width: '100%',
+          }}>
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 22 }}>
+              <img src="/logo.png" alt="VBOS" style={{ width: 48, height: 48, borderRadius: '50%', border: '2px solid #00ff41', boxShadow: '0 0 12px rgba(0,255,65,0.4)' }} />
+              <div>
+                <div style={{ color: '#00ff41', fontSize: 15, fontWeight: 'bold', letterSpacing: '0.12em' }}>VBOS SETUP</div>
+                <div style={{ color: '#4a9e4a', fontSize: 10, marginTop: 2 }}>First-time system access configuration</div>
+              </div>
+            </div>
+
+            {permissionStep === 'idle' && (
+              <>
+                <div style={{ color: '#00ff41', fontSize: 11, letterSpacing: '0.1em', marginBottom: 14 }}>
+                  &gt; VBOS needs the following permissions to operate at full capacity:
+                </div>
+                {/* Permission items */}
+                {[
+                  { icon: '🎙', label: 'MICROPHONE', desc: 'Required for voice commands and the wake word engine' },
+                  { icon: '🔔', label: 'NOTIFICATIONS', desc: 'Optional — for task completion alerts and reminders' },
+                  { icon: '🔊', label: 'SPEAKER', desc: 'Auto-enabled — VBOS will respond with voice output' },
+                ].map(item => (
+                  <div key={item.label} style={{
+                    display: 'flex', alignItems: 'flex-start', gap: 12,
+                    borderBottom: '1px solid #00ff4122', paddingBottom: 12, marginBottom: 12,
+                  }}>
+                    <span style={{ fontSize: 20 }}>{item.icon}</span>
+                    <div>
+                      <div style={{ color: '#00ff41', fontSize: 11, fontWeight: 'bold', letterSpacing: '0.08em' }}>{item.label}</div>
+                      <div style={{ color: '#4a9e4a', fontSize: 10, marginTop: 3, lineHeight: 1.4 }}>{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
+                <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+                  <button
+                    onClick={handleRequestPermissions}
+                    style={{
+                      flex: 1, background: '#00ff41', color: '#0a0f0d',
+                      border: 'none', fontFamily: "'Share Tech Mono', monospace",
+                      fontSize: 12, fontWeight: 'bold', padding: '10px 0',
+                      borderRadius: 2, cursor: 'pointer', letterSpacing: '0.08em',
+                      boxShadow: '0 0 16px rgba(0,255,65,0.5)',
+                    }}
+                  >
+                    ⚡ GRANT ACCESS
+                  </button>
+                  <button
+                    onClick={handleDismissPermissions}
+                    style={{
+                      background: 'transparent', color: '#4a9e4a',
+                      border: '1px solid #00ff4144',
+                      fontFamily: "'Share Tech Mono', monospace",
+                      fontSize: 11, padding: '10px 14px',
+                      borderRadius: 2, cursor: 'pointer',
+                    }}
+                  >
+                    SKIP
+                  </button>
+                </div>
+              </>
+            )}
+
+            {permissionStep === 'requesting' && (
+              <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                <div style={{ fontSize: 32, marginBottom: 14 }}>⚡</div>
+                <div style={{ color: '#00ff41', fontSize: 12, letterSpacing: '0.1em' }}>REQUESTING ACCESS...</div>
+                <div style={{ color: '#4a9e4a', fontSize: 10, marginTop: 8 }}>Allow the permission popups from your browser</div>
+              </div>
+            )}
+
+            {permissionStep === 'done' && (
+              <>
+                <div style={{ color: '#00ff41', fontSize: 11, letterSpacing: '0.1em', marginBottom: 16 }}>
+                  &gt; PERMISSION SETUP COMPLETE
+                </div>
+                {[
+                  { icon: '🎙', label: 'MICROPHONE', key: 'mic' },
+                  { icon: '🔔', label: 'NOTIFICATIONS', key: 'notifications' },
+                  { icon: '🔊', label: 'SPEAKER', key: null },
+                ].map(item => {
+                  const status = item.key ? permResults[item.key] : 'granted';
+                  const isOk = status === 'granted';
+                  return (
+                    <div key={item.label} style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      borderBottom: '1px solid #00ff4122', paddingBottom: 10, marginBottom: 10,
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span style={{ fontSize: 18 }}>{item.icon}</span>
+                        <span style={{ color: '#00ff41', fontSize: 11 }}>{item.label}</span>
+                      </div>
+                      <span style={{
+                        fontSize: 10, fontWeight: 'bold', letterSpacing: '0.08em',
+                        color: isOk ? '#00ff41' : '#ff4444',
+                      }}>
+                        {isOk ? '● GRANTED' : status === 'unsupported' ? '◌ N/A' : '✖ DENIED'}
+                      </span>
+                    </div>
+                  );
+                })}
+                <button
+                  onClick={handleDonePermissions}
+                  style={{
+                    width: '100%', background: '#00ff41', color: '#0a0f0d',
+                    border: 'none', fontFamily: "'Share Tech Mono', monospace",
+                    fontSize: 12, fontWeight: 'bold', padding: '10px 0',
+                    borderRadius: 2, cursor: 'pointer', letterSpacing: '0.08em',
+                    boxShadow: '0 0 16px rgba(0,255,65,0.5)', marginTop: 8,
+                  }}
+                >
+                  ✔ LAUNCH VBOS
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* VoiceModal removed — VBOS status is shown inline in the topbar */}
 
