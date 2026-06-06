@@ -532,8 +532,39 @@ function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useLocalStorage('jarvis_authenticated', false);
 
   const [showVoiceModal, setShowVoiceModal] = useState(false);
+  const [installBannerDismissed, setInstallBannerDismissed] = useState(false);
   const [jarvisAwake, setJarvisAwake] = useState(false); // topbar badge only
   const [voicesList, setVoicesList] = useState([]);
+
+  // PWA Install Prompt State & Listener
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstallable(false);
+    }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallApp = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response to PWA install prompt: ${outcome}`);
+    setDeferredPrompt(null);
+    setIsInstallable(false);
+  };
 
 
 
@@ -834,6 +865,8 @@ function AppContent() {
                   setWakeWordActive={setWakeWordActive}
                   wakeWordPhrase={wakeWordPhrase}
                   setWakeWordPhrase={setWakeWordPhrase}
+                  isInstallable={isInstallable}
+                  onInstallApp={handleInstallApp}
                 />
               }
             />
@@ -842,7 +875,7 @@ function AppContent() {
         </main>
       </div>
 
-      {/* VoiceModal removed — JARVIS status is shown inline in the topbar */}
+      {/* VoiceModal removed — VBOS status is shown inline in the topbar */}
 
       {/* ── Floating Voice Assistant Panel (non-blocking, self-contained) ── */}
       <VoiceModal
@@ -859,6 +892,70 @@ function AppContent() {
         setClapActive={setClapActive}
         autoListenTrigger={autoListenTrigger}
       />
+
+      {/* ── PWA Install Banner ── */}
+      {isInstallable && !installBannerDismissed && (
+        <div style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 9999,
+          background: 'linear-gradient(135deg, #050a05 0%, #0a1a0a 100%)',
+          borderTop: '1px solid #00ff41',
+          boxShadow: '0 -4px 24px rgba(0,255,65,0.18)',
+          padding: '14px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+          fontFamily: "'Share Tech Mono', monospace",
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <img src="/logo.png" alt="VBOS" style={{ width: 36, height: 36, borderRadius: '50%', border: '1px solid #00ff4166' }} />
+            <div>
+              <div style={{ color: '#00ff41', fontSize: 13, fontWeight: 'bold', letterSpacing: '0.1em' }}>📲 INSTALL VBOS APP</div>
+              <div style={{ color: '#4a9e4a', fontSize: 10, marginTop: 2 }}>Add to your home screen for the full experience — works offline.</div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+            <button
+              onClick={handleInstallApp}
+              style={{
+                background: '#00ff41',
+                color: '#0a0f0d',
+                border: 'none',
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: 11,
+                fontWeight: 'bold',
+                padding: '8px 16px',
+                borderRadius: 2,
+                cursor: 'pointer',
+                letterSpacing: '0.08em',
+                boxShadow: '0 0 12px rgba(0,255,65,0.4)',
+              }}
+            >
+              ⬇ INSTALL
+            </button>
+            <button
+              onClick={() => setInstallBannerDismissed(true)}
+              style={{
+                background: 'transparent',
+                color: '#4a9e4a',
+                border: '1px solid #00ff4144',
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: 11,
+                padding: '8px 12px',
+                borderRadius: 2,
+                cursor: 'pointer',
+                letterSpacing: '0.08em',
+              }}
+            >
+              ✕ LATER
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

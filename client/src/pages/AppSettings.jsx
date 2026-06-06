@@ -207,7 +207,9 @@ export function AppSettings({
   wakeWordActive,
   setWakeWordActive,
   wakeWordPhrase,
-  setWakeWordPhrase
+  setWakeWordPhrase,
+  isInstallable,
+  onInstallApp,
 }) {
   const navigate = useNavigate();
   const [savedStatus, setSavedStatus] = useState(null); // null | 'saving' | 'saved'
@@ -394,6 +396,36 @@ export function AppSettings({
                 onClick={() => navigate('/integrations')}
               >
                 MANAGE CONNECTIONS →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PWA Install Panel */}
+      <div className="aps-panel">
+        <div className="aps-panel-header">
+          <span>// INSTALL APP</span>
+        </div>
+        <div className="aps-panel-body">
+          <div className="aps-row">
+            <div className="aps-info">
+              <span className="aps-label">INSTALL VBOS AS AN APP</span>
+              <span className="aps-desc">
+                {isInstallable
+                  ? 'Your browser supports PWA installation. Install VBOS on your device for offline access and a native app experience.'
+                  : 'VBOS is already installed or your browser does not support PWA installation at this time.'}
+              </span>
+            </div>
+            <div className="aps-control">
+              <button
+                type="button"
+                className={`aps-btn ${isInstallable ? 'aps-btn-active' : ''}`}
+                onClick={onInstallApp}
+                disabled={!isInstallable}
+                style={{ opacity: isInstallable ? 1 : 0.4, cursor: isInstallable ? 'pointer' : 'not-allowed' }}
+              >
+                {isInstallable ? '⬇ INSTALL APP' : '✔ ALREADY INSTALLED'}
               </button>
             </div>
           </div>
