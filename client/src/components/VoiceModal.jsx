@@ -544,7 +544,7 @@ Instructions:
         }, 800);
       });
     } catch (err) {
-      const errMsg = `Error: ${err.message || 'Could not reach JARVIS.'}`;
+      const errMsg = `Error: ${err.message || 'Could not reach VBOS.'}`;
       setMessages(prev => [...prev, { role: 'jarvis', text: errMsg, ts: Date.now() }]);
       speakReply(errMsg, () => {
         setTimeout(() => {
@@ -603,7 +603,7 @@ Instructions:
           <div className="ja-header-left">
             <div className="ja-icon-box">💬</div>
             <div>
-              <div className="ja-title">JARVIS Assistant</div>
+              <div className="ja-title">VBOS Assistant</div>
               <span className="ja-subtitle">
                 {isListening ? '🔴 Listening...' : isThinking ? '⚡ Thinking...' : 'Voice Commands Ready'}
               </span>
@@ -617,14 +617,14 @@ Instructions:
           {messages.length === 0 && !isThinking && (
             <div className="ja-empty">
               Say or type a command.<br />
-              JARVIS will reply right here.
+              VBOS will reply right here.
             </div>
           )}
 
           {messages.map((msg, i) => (
             <div key={i} className={msg.role === 'user' ? 'ja-msg-user' : 'ja-msg-jarvis'}>
               <div className="ja-msg-label">
-                {msg.role === 'user' ? `YOU · ${fmt(msg.ts)}` : `JARVIS · ${fmt(msg.ts)}`}
+                {msg.role === 'user' ? `YOU · ${fmt(msg.ts)}` : `VBOS · ${fmt(msg.ts)}`}
               </div>
               {msg.text}
             </div>
@@ -632,7 +632,7 @@ Instructions:
 
           {isThinking && (
             <div className="ja-msg-jarvis">
-              <div className="ja-msg-label">JARVIS · thinking</div>
+              <div className="ja-msg-label">VBOS · thinking</div>
               <div className="ja-thinking">
                 <span /><span /><span />
               </div>
@@ -693,7 +693,7 @@ Instructions:
               CLR ✕
             </button>
           </div>
-          <div className="ja-footer-label">JARVIS // INLINE ASSISTANT ACTIVE</div>
+          <div className="ja-footer-label">VBOS // INLINE ASSISTANT ACTIVE</div>
         </div>
 
       </div>

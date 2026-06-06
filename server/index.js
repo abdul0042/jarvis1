@@ -35,7 +35,7 @@ app.use('/api/sheets', sheetsRoutes);
 // --- In-Memory Database for Mock APIs ---
 let mockTodos = [
   { id: 1, title: 'Buy groceries', completed: false },
-  { id: 2, title: 'Finish JARVIS dashboard design', completed: true },
+  { id: 2, title: 'Finish VBOS dashboard design', completed: true },
 ];
 
 let mockTransactions = [
@@ -266,7 +266,7 @@ app.get('/api/health', (req, res) => {
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`==================================================`);
-    console.log(`  JARVIS Backend is running on port ${PORT}`);
+    console.log(`  VBOS Backend is running on port ${PORT}`);
     console.log(`  Health Check: http://localhost:${PORT}/api/health`);
     console.log(`  Connected Apps: http://localhost:${PORT}/api/apps`);
     console.log(`  Chat History:   http://localhost:${PORT}/api/history`);

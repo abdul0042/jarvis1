@@ -464,9 +464,9 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
 
   const fillMock = (type) => {
     const presets = {
-      todo: { name: 'JARVIS Todo List', baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/todos', apiKey: 'demo-todo-key-123', description: 'Manages todo list tasks. Use tasks endpoint to GET, POST, and DELETE items.' },
-      finance: { name: 'JARVIS Finance Tracker', baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/finance', apiKey: 'demo-finance-key-456', description: 'Records financial transactions: income and expenses. Supports adding items.' },
-      weather: { name: 'JARVIS Weather', baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/weather', apiKey: 'demo-weather-key-789', description: 'Provides real-time weather information and forecasting for cities.' },
+      todo: { name: 'VBOS Todo List', baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/todos', apiKey: 'demo-todo-key-123', description: 'Manages todo list tasks. Use tasks endpoint to GET, POST, and DELETE items.' },
+      finance: { name: 'VBOS Finance Tracker', baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/finance', apiKey: 'demo-finance-key-456', description: 'Records financial transactions: income and expenses. Supports adding items.' },
+      weather: { name: 'VBOS Weather', baseUrl: (import.meta.env.VITE_API_URL || 'https://jarvis1-92wq.onrender.com') + '/api/mock/weather', apiKey: 'demo-weather-key-789', description: 'Provides real-time weather information and forecasting for cities.' },
     };
     const p = presets[type];
     setName(p.name); setBaseUrl(p.baseUrl); setApiKey(p.apiKey);
@@ -508,7 +508,7 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
                   {gmailChecking
                     ? 'Checking connection...'
                     : gmailConnected
-                      ? 'OAuth2 connected — read, send & search emails via JARVIS'
+                      ? 'OAuth2 connected — read, send & search emails via VBOS'
                       : 'Connect via Google OAuth2 — no API key required'}
                 </div>
                 {gmailConnected && (
@@ -537,7 +537,7 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
                   {sheetsChecking
                     ? 'Checking connection...'
                     : sheetsConnected
-                      ? 'OAuth2 connected — read, update & append spreadsheets via JARVIS'
+                      ? 'OAuth2 connected — read, update & append spreadsheets via VBOS'
                       : 'Connect via Google Sheets OAuth2 — no API key required'}
                 </div>
                 {sheetsConnected && (
@@ -613,7 +613,7 @@ export function AppConnector({ onSave, onCancel, editApp = null }) {
           {testResult && (
             <div className={`ac-result ${testResult === 'success' ? 'ac-result-ok' : 'ac-result-err'}`}>
               {testResult === 'success'
-                ? '✔ CONNECTION SUCCEEDED — JARVIS can reach the base URL.'
+                ? '✔ CONNECTION SUCCEEDED — VBOS can reach the base URL.'
                 : `✖ CONNECTION FAILED — ${errorMsg || 'Check your credentials and URL.'}`}
             </div>
           )}

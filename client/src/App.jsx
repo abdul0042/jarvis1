@@ -557,11 +557,11 @@ function AppContent() {
     };
   }, [selectedVoiceName, setSelectedVoiceName]);
 
-  // Listen for JARVIS ui_action: open_voice
+  // Listen for VBOS ui_action: open_voice
   useEffect(() => {
     const handler = () => setShowVoiceModal(true);
-    window.addEventListener('launch-jarvis-assistant', handler);
-    return () => window.removeEventListener('launch-jarvis-assistant', handler);
+    window.addEventListener('launch-vbos-assistant', handler);
+    return () => window.removeEventListener('launch-vbos-assistant', handler);
   }, []);
 
 
@@ -629,7 +629,7 @@ function AppContent() {
     speakGreeting(greetingText, () => {
       // Once greeting is done, automatically open the modal and start listening
       setTimeout(() => {
-        window.dispatchEvent(new CustomEvent('launch-jarvis-assistant', { detail: { autoListen: true } }));
+        window.dispatchEvent(new CustomEvent('launch-vbos-assistant', { detail: { autoListen: true } }));
       }, 100);
     });
   };
@@ -641,7 +641,7 @@ function AppContent() {
 
   const [autoListenTrigger, setAutoListenTrigger] = useState(0);
 
-  // Listen for mic button clicks from any page dispatching 'launch-jarvis-assistant'
+  // Listen for mic button clicks from any page dispatching 'launch-vbos-assistant'
   useEffect(() => {
     const handler = (e) => {
       setShowVoiceModal(true);
@@ -649,8 +649,8 @@ function AppContent() {
         setAutoListenTrigger(prev => prev + 1);
       }
     };
-    window.addEventListener('launch-jarvis-assistant', handler);
-    return () => window.removeEventListener('launch-jarvis-assistant', handler);
+    window.addEventListener('launch-vbos-assistant', handler);
+    return () => window.removeEventListener('launch-vbos-assistant', handler);
   }, []);
 
   // Mic button (sidebar) → popup only

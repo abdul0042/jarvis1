@@ -92,7 +92,7 @@ export function useGemini() {
       }
     } catch (err) {
       console.error('useGemini error:', err);
-      setError(err.message || 'Something went wrong while talking to JARVIS.');
+      setError(err.message || 'Something went wrong while talking to VBOS.');
       addMessageToUi({
         sender: 'jarvis',
         type: 'text',
@@ -114,7 +114,7 @@ export function useGemini() {
       {
         id: 'welcome',
         sender: 'jarvis',
-        text: `Hello ${salutation}! I am JARVIS. How can I help you today?`,
+        text: `Hello ${salutation}! I am VBOS. How can I help you today?`,
         timestamp: Date.now()
       }
     ]);

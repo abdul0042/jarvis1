@@ -61,7 +61,7 @@ router.post('/', async (req, res) => {
 
   const fullUrl = `${cleanBaseUrl}${cleanEndpoint}`;
 
-  console.log(`[JARVIS Proxy] Forwarding request: ${method.toUpperCase()} ${fullUrl}`);
+  console.log(`[VBOS Proxy] Forwarding request: ${method.toUpperCase()} ${fullUrl}`);
 
   try {
     const axiosConfig = {
@@ -78,9 +78,9 @@ router.post('/', async (req, res) => {
       axiosConfig.params = { ...axiosConfig.params, ...payload };
     }
 
-    console.log('[JARVIS Proxy] Query params:', JSON.stringify(queryParams));
-    console.log('[JARVIS Proxy] Headers:', JSON.stringify(headers));
-    console.log('[JARVIS Proxy] Full URL:', fullUrl);
+    console.log('[VBOS Proxy] Query params:', JSON.stringify(queryParams));
+    console.log('[VBOS Proxy] Headers:', JSON.stringify(headers));
+    console.log('[VBOS Proxy] Full URL:', fullUrl);
 
     const response = await axios(axiosConfig);
     let responseData = response.data;
@@ -90,16 +90,16 @@ router.post('/', async (req, res) => {
 
     // Log all response headers for orders endpoints to help debug total-count issues
     if (isOrders && method.toLowerCase() === 'get') {
-      console.log(`[JARVIS Proxy] Orders response headers:`, JSON.stringify(response.headers, null, 2));
+      console.log(`[VBOS Proxy] Orders response headers:`, JSON.stringify(response.headers, null, 2));
       if (Array.isArray(responseData)) {
-        console.log(`[JARVIS Proxy] Orders array length: ${responseData.length}`);
+        console.log(`[VBOS Proxy] Orders array length: ${responseData.length}`);
       } else if (typeof responseData === 'object') {
         const keys = Object.keys(responseData || {});
-        console.log(`[JARVIS Proxy] Orders response keys: ${keys.join(', ')}`);
+        console.log(`[VBOS Proxy] Orders response keys: ${keys.join(', ')}`);
         // Log top-level numeric/count fields
         keys.forEach(k => {
           if (typeof responseData[k] === 'number' || /total|count|pagination|meta/i.test(k)) {
-            console.log(`[JARVIS Proxy] Orders field "${k}": ${JSON.stringify(responseData[k])}`);
+            console.log(`[VBOS Proxy] Orders field "${k}": ${JSON.stringify(responseData[k])}`);
           }
         });
       }
@@ -128,7 +128,7 @@ router.post('/', async (req, res) => {
       data: responseData
     });
   } catch (error) {
-    console.error(`[JARVIS Proxy] Error:`, error.message);
+    console.error(`[VBOS Proxy] Error:`, error.message);
     
     if (error.response) {
       // The request was made and the server responded with a status code

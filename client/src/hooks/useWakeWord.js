@@ -33,18 +33,16 @@ export function useWakeWord({ enabled, phrase, onWake, modalActive }) {
       recognition.onresult = (event) => {
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           const text = event.results[i][0].transcript.toLowerCase();
-          const targetPhrase = (phrase || 'Hey JARVIS').toLowerCase();
+          const targetPhrase = (phrase || 'Hey VBOS').toLowerCase();
 
           if (
             text.includes(targetPhrase) ||
-            (targetPhrase === 'hey jarvis' && (
-              text.includes('wake up jarvis') ||
-              text.includes('hi jarvis') ||
-              text.includes('hello jarvis') ||
-              text.includes('hey charlie') ||
-              text.includes('hey garvis') ||
-              text.includes('garvis') ||
-              text.includes('jarvis')
+            (targetPhrase === 'hey vbos' && (
+              text.includes('wake up vbos') ||
+              text.includes('hi vbos') ||
+              text.includes('hello vbos') ||
+              text.includes('vbos') ||
+              text.includes('bos')
             ))
           ) {
             console.log("[Wake Word] Triggered phrase detected: ", text);

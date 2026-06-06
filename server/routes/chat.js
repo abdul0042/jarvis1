@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
     if (isSummary) {
       const summaryModel = genAI.getGenerativeModel({
         model: 'gemini-2.5-flash',
-        systemInstruction: `You are JARVIS. You have already executed an API action and received data.
+        systemInstruction: `You are VBOS. You have already executed an API action and received data.
 Your only job is to read the data in the user message and answer their question in 1-2 sentences.
 Never output JSON. Never say "Done". Never perform new actions. Just answer directly.
 Address the user as "${salutation || 'Sir'}".
@@ -34,7 +34,7 @@ ${language === 'tanglish' ? 'Respond in Tanglish.' : 'Respond in English.'}`
 
       const summaryResult = await summaryModel.generateContent(message);
       const summaryText = summaryResult.response.text().trim();
-      console.log(`[JARVIS Summary] Response: ${summaryText}`);
+      console.log(`[VBOS Summary] Response: ${summaryText}`);
       return res.json({ type: 'text', text: summaryText, rawResponse: summaryText });
     }
     // ─────────────────────────────────────────────────────────────────────────
@@ -45,11 +45,11 @@ ${language === 'tanglish' ? 'Respond in Tanglish.' : 'Respond in English.'}`
     // Build system instruction
     const connectedAppNames = (connectedApps || []).map(a => a.name).join(', ') || 'none';
 
-    let systemPrompt = `You are JARVIS, an AI assistant that controls connected apps on behalf of the user.
+    let systemPrompt = `You are VBOS, an AI assistant that controls connected apps on behalf of the user.
 
 ## SYSTEM AWARENESS
 You have full knowledge of this application. Here is everything you know about it:
-- This app is called JARVIS — an AI-powered command center that connects to external services via their REST APIs.
+- This app is called VBOS — an AI-powered command center that connects to external services via their REST APIs.
 - It has an Integrations page where the user can connect, disconnect, and manage third-party apps.
 - It has a Chat page (where you currently are) for issuing commands and asking questions.
 - It has a History page that logs every past action taken.
@@ -100,11 +100,11 @@ When the user gives an action command targeting an EXTERNAL APP (e.g. "send emai
 CRITICAL — ONE ACTION AT A TIME: You MUST only output ONE action JSON per response. If the user asks for multiple things (e.g. reports + leaderboard + earnings), execute them one at a time. After each result is returned to you, decide the next action. NEVER output two or more JSON objects in a single response — this breaks the system. Execute step by step.
 
 ## HOW TO HANDLE IN-APP UI COMMANDS — ABSOLUTE RULE
-You ARE a fully integrated AI controller for the JARVIS application. You CAN and MUST navigate pages, clear the chat, and open features within the app by returning a ui_action JSON.
+You ARE a fully integrated AI controller for the VBOS application. You CAN and MUST navigate pages, clear the chat, and open features within the app by returning a ui_action JSON.
 
 NEVER say "I cannot open pages", "I don't have the ability to navigate", or anything that refuses a navigation request. You have FULL control over the app's UI. When the user asks you to open, go to, navigate, or show any page — you MUST return the JSON below immediately.
 
-When the user wants to navigate, control, or modify the JARVIS app's configuration (like disconnecting integrations), respond ONLY with:
+When the user wants to navigate, control, or modify the VBOS app's configuration (like disconnecting integrations), respond ONLY with:
 {
   "ui_action": "<action>",
   "target_app": "<target_app_name_if_applicable>",
@@ -158,8 +158,8 @@ CRITICAL: For any action (api or ui), output ONLY the raw JSON object — no mar
       };
     });
 
-    console.log(`[JARVIS Chat] System prompt loaded with ${connectedApps?.length || 0} apps.`);
-    console.log(`[JARVIS Chat] Sending message: "${message}"`);
+    console.log(`[VBOS Chat] System prompt loaded with ${connectedApps?.length || 0} apps.`);
+    console.log(`[VBOS Chat] Sending message: "${message}"`);
 
     // Start a chat session with history
     const chat = model.startChat({
@@ -173,7 +173,7 @@ CRITICAL: For any action (api or ui), output ONLY the raw JSON object — no mar
     const result = await chat.sendMessage(message);
     const responseText = result.response.text().trim();
 
-    console.log(`[JARVIS Chat] Raw Gemini Response:`, responseText);
+    console.log(`[VBOS Chat] Raw Gemini Response:`, responseText);
 
     // If this is a greeting, bypass JSON parsing and just return text
     if (req.body.isGreeting) {
@@ -231,7 +231,7 @@ CRITICAL: For any action (api or ui), output ONLY the raw JSON object — no mar
       });
     }
   } catch (error) {
-    console.error('[JARVIS Chat] Error calling Gemini:', error);
+    console.error('[VBOS Chat] Error calling Gemini:', error);
     return res.status(500).json({
       error: 'Error calling Gemini API',
       details: error.message

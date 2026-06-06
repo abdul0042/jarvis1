@@ -893,7 +893,7 @@ export function Chat({
 
   const handleStartListening = () => {
     unlockSpeech();
-    window.dispatchEvent(new CustomEvent('launch-jarvis-assistant'));
+    window.dispatchEvent(new CustomEvent('launch-vbos-assistant'));
   };
 
   // Clean and speak text helper

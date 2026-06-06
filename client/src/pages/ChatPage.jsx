@@ -233,7 +233,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
         addMessageToUi({ sender: 'system', text: 'Launching voice assistant...' });
         addMessageToUi({ sender: 'jarvis', text: explanation || 'Opening voice assistant, Sir.' });
         setIsLoading(false);
-        setTimeout(() => window.dispatchEvent(new CustomEvent('launch-jarvis-assistant')), 600);
+        setTimeout(() => window.dispatchEvent(new CustomEvent('launch-vbos-assistant')), 600);
         return;
       }
 
@@ -282,7 +282,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
               }
             }
           } catch (err) {
-            console.error('[JARVIS] Disconnect error:', err);
+            console.error('[VBOS] Disconnect error:', err);
           } finally {
             setIsLoading(false);
           }
@@ -552,7 +552,7 @@ Respond with ONLY the greeting. No JSON. No extra text.`;
 
         const directReply = buildDirectResponse(action, apiResult.data, salutation);
         if (directReply) {
-          console.log('[JARVIS] Direct response (no Gemini):', directReply);
+          console.log('[VBOS] Direct response (no Gemini):', directReply);
           addMessageToUi({ sender: 'jarvis', text: directReply });
           const newHistoryItem = {
             id: crypto.randomUUID(), timestamp: Date.now(),
@@ -669,7 +669,7 @@ Instructions:
         }
 
       } catch (actionErr) {
-        console.error('[JARVIS] Action handler crashed:', actionErr);
+        console.error('[VBOS] Action handler crashed:', actionErr);
         addMessageToUi({
           sender: 'jarvis',
           text: `Something went wrong processing the response. Please try again.`,
