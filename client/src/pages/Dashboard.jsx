@@ -1336,8 +1336,8 @@ export function Dashboard({ apps, setApps, history }) {
           <ConnectedAppsPanel apps={apps} setApps={setApps} />
           <LiveFeedPanel apps={apps} />
 
-          {/* Skull Box (Neural Link Panel) */}
-          <NeuralLinkPanel className="hud-col-5" />
+          {/* Skull Box (Neural Link Panel) — hidden for now, component kept below */}
+          {/* <NeuralLinkPanel className="hud-col-5" /> */}
 
           <RecentActionsPanel history={history} />
           <QuickCommandsPanel history={history} />
